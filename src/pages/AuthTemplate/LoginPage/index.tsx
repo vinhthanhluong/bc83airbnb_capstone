@@ -1,11 +1,12 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from '@hookform/resolvers/zod'
 import z from "zod";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useLoginForm } from "@/hooks/useAuthQuery";
-import type { AuthApiResponse, CurrentUser } from "@/interface/auth.interface";
+import { useAuthStore } from "@/store/auth.store";
 
 const schema = z.object({
     email: z.string().nonempty('Email không được để trống').regex(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, "Vui lòng nhập đúng định dạng @"),
@@ -15,6 +16,8 @@ const schema = z.object({
 type LoginInput = z.infer<typeof schema>
 
 export default function LoginPage() {
+    const { user, setUser } = useAuthStore();
+    const navigate = useNavigate();
 
     const { mutate: handleLogin, isPending: isPendingLogin } = useLoginForm();
 
@@ -32,8 +35,9 @@ export default function LoginPage() {
 
     const onSubmit = (data: LoginInput) => {
         handleLogin(data, {
-            onSuccess: (currentUser: AuthApiResponse<CurrentUser>) => {
-                console.log('currentUser', currentUser);
+            onSuccess: (currentUser) => {
+                setUser(currentUser);
+                navigate(user?.user.role === 'USER' ? '/' : '/dashboard')
             }
         })
     }
