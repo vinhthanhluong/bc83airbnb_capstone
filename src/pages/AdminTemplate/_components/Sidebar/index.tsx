@@ -19,7 +19,7 @@ export default function Sidebar() {
     const [itemMenuHeight, setItemMenuHeight] = useState<number>(0);
     const [indexActive, setIndexActive] = useState<number>(0);
 
-    const [isMenuSp, setIsMenuSp] = useState(false);
+    const [isMenuSp, setIsMenuSp] = useState<boolean>(false);
 
     useEffect(() => {
         const handleResize = () => {
@@ -38,13 +38,13 @@ export default function Sidebar() {
 
 
     return (
-        <div className=" fixed bottom-0 md:top-0 left-0 z-10 w-full md:w-70 p-2 md:pr-0 md:pt-5 md:pl-3  bg-gradient-to-r from-sky-300 to-blue-300 md:group-[.menuSmall]:w-20 duration-300 transition-all">
+        <div className=" fixed bottom-0 md:top-0 left-0 z-10 w-full md:w-70 p-2 md:pr-0 md:pt-5 md:pl-3 bg-gradient-to-r from-sky-300 to-blue-300 md:group-[.menuSmall]:w-20 duration-300 transition-all">
             <div className='logo mb-6 text-center group-[.menuSmall]:opacity-0 group-[.menuSmall]:pointer-events-none hidden md:block'>
                 <p className='text-5xl font-bold text-pink-200'>LaniBnB</p>
             </div>
-            <div className="block relative z-0 w-fit mx-auto flex justify-center md:block md:w-auto">
+            <div className="block relative z-0 w-fit mx-auto flex justify-center md:block md:w-auto gap-1 md:gap-0">
                 <div className='SidebarEff' style={isMenuSp ? {
-                    transform: `translateX(${itemMenuWidth * indexActive}px)`,
+                    transform: `translateX(calc(${itemMenuWidth * indexActive}px + ${4 * indexActive}px))`,
                     width: `${itemMenuWidth}px`
                 }
                     : {
