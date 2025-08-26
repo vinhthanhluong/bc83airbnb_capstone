@@ -28,7 +28,7 @@ export default function AdminLayout() {
             <div className='block'>
                 <Sidebar />
                 <div className='relative w-full mt-15 md:mt-20 md:pl-70 md:group-[.menuSmall]:pl-20 transition-all duration-300'>
-                    <div className='p-5'><Outlet /></div>
+                    <div className='p-5 lg:p-10'><Outlet /></div>
                 </div>
             </div>
         </div>
