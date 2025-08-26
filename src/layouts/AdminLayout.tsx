@@ -1,22 +1,34 @@
+import { Navigate, Outlet } from 'react-router-dom'
+
 import Header from '@/pages/AdminTemplate/_components/Header'
 import Sidebar from '@/pages/AdminTemplate/_components/Sidebar'
 import { useAuthStore } from '@/store/auth.store';
-import { Navigate, Outlet } from 'react-router-dom'
+import { useDashboardStore } from '@/store/dashboard.store';
+import { useEffect } from 'react';
 
 export default function AdminLayout() {
     // const { user } = useAuthStore();
     // if (user) {
     //     return <Navigate to={user?.user.role === 'USER' ? '/' : '/dashboard'} />
     // }
+    const { isMenu, setIsMenuSp } = useDashboardStore()
+    useEffect(() => {
+        const handleResize = () => {
+            const winWidth = window.innerWidth;
+            setIsMenuSp(winWidth <= 1279)
+        }
+        handleResize();
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, []);
+    
     return (
-        <div>
+        <div className={`${isMenu ? "group menuSmall" : ""}`}>
             <Header />
             <div className='block'>
-                <div className='fixed top-0 left-0 w-70 bg-gradient-to-r from-sky-300 to-blue-300'>
-                    <Sidebar />
-                </div>
-                <div className='w-full pl-70'>
-                    <Outlet />
+                <Sidebar />
+                <div className='relative w-full mt-15 md:mt-20 md:pl-70 md:group-[.menuSmall]:pl-20 transition-all duration-300'>
+                    <div className='p-5'><Outlet /></div>
                 </div>
             </div>
         </div>
