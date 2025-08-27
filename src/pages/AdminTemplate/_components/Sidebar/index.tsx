@@ -44,7 +44,7 @@ export default function Sidebar() {
 
 
     return (
-        <div className=" fixed bottom-0 md:top-0 left-0 z-10 w-full md:w-70 p-2 md:pr-0 md:pt-5 md:pl-3 bg-gradient-to-r from-sky-300 to-blue-300 md:group-[.menuSmall]:w-20 duration-300 transition-all">
+        <div className=" fixed bottom-0 md:top-0 left-0 z-10 w-full md:w-70 p-2 md:pr-0 md:pt-5 md:pl-3 bg-gradient-to-r from-sky-300 to-blue-300 md:group-[.menuSmall]:w-20 duration-300 transition-all overflow-hidden">
             <div className='logo mb-6 text-center group-[.menuSmall]:opacity-0 group-[.menuSmall]:pointer-events-none hidden md:block'>
                 <p className='text-5xl font-bold text-pink-200'>LaniBnB</p>
             </div>

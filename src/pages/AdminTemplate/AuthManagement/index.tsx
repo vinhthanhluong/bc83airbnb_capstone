@@ -17,7 +17,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { PopupAuth } from "./PopupAuth";
-import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
+import { Dialog } from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
