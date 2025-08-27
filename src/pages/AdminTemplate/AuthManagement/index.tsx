@@ -1,4 +1,4 @@
-import { Plus, SquarePen, Trash2, UserPlus } from "lucide-react";
+import { SquarePen, Trash2, UserPlus } from "lucide-react";
 import {
     Pagination,
     PaginationContent,
@@ -16,17 +16,31 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { PopupAuth } from "./popupAuth";
+import { PopupAuth } from "./PopupAuth";
+import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 export default function AuthManagement() {
+
+    const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
+    const [mode, setMode] = useState<"add" | "edit" | null>(null);
+    const [selectData, setSelectData] = useState(null);
+
+    const dataTest = {};
+    const handleOpenPopup = (modeData: any, data?: any) => {
+        setMode(modeData)
+        setSelectData(data || null);
+        setIsOpenPopup(true);
+    }
+
     return (
         <div>
             <div className="relative">
                 <h2 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-5 lg:mb-8">Quản lý người dùng</h2>
-                <button className="absolute top-0 md:top-1 right-0 flex items-center gap-1 text-white bg-pink-400 font-semibold h-full p-2 md:px-3 rounded-md cursor-pointer hover:bg-white hover:text-pink-400 hover:shadow-[0_0_10px_#e396c1] transition-all duration-300">
-                    <UserPlus size={20} />
-                    <span className="hidden md:block">Thêm</span>
-                </button>
+                <Button
+                    onClick={() => handleOpenPopup('add')}
+                    variant="outline" className="absolute top-0 md:top-1 right-0 flex items-center gap-2 text-white bg-pink-400 border-pink-400 font-semibold h-full p-2 md:px-3 rounded-md cursor-pointer hover:bg-white hover:text-pink-400 hover:shadow-[0_0_10px_#e396c1] transition-all duration-300"><UserPlus size={20} /> Thêm</Button>
             </div>
 
             <div className="mb-6 flex gap-2 sp400:gap-4">
@@ -123,7 +137,9 @@ export default function AuthManagement() {
                                 </td>
                                 <td className="py-3 px-4">
                                     <div className="flex gap-2">
-                                        <SquarePen className="cursor-pointer text-yellow-500 hover:text-yellow-800" size={20} />
+                                        <SquarePen
+                                            onClick={() => handleOpenPopup('edit', dataTest)}
+                                            className="cursor-pointer text-yellow-500 hover:text-yellow-800" size={20} />
                                         <Trash2 className="cursor-pointer text-red-500 hover:text-red-800" size={20} />
                                     </div>
                                 </td>
@@ -160,8 +176,10 @@ export default function AuthManagement() {
                     </div>
                 </div>
             </div>
-
-            <PopupAuth />
+            <Dialog open={isOpenPopup} onOpenChange={setIsOpenPopup}>
+                {mode === "add" && <PopupAuth mode="add" />}
+                {mode === "edit" && <PopupAuth mode="edit" data={selectData} />}
+            </Dialog>
         </div>
     )
 }
