@@ -1,13 +1,10 @@
 import { Button } from "@/components/ui/button"
 import {
-    Dialog,
     DialogClose,
     DialogContent,
-    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -26,23 +23,27 @@ import {
 } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { CalendarDays, ChevronDownIcon, CircleUser, Mail, Phone, SquareAsterisk, User, UserRoundPen, VenusAndMars } from "lucide-react"
-import { useState } from "react"
+import { useState } from "react";
 
-export function PopupAuth() {
+interface PopupAuthProps {
+    mode: "add" | "edit",
+    data?: any
+}
+
+export function PopupAuth({ mode, data }: PopupAuthProps) {
     const [openDate, setOpenDate] = useState(false)
     const [date, setDate] = useState<Date | undefined>(undefined)
 
     return (
-        <Dialog>
+        <DialogContent className="sm:max-w-[800px] p-0 gap-0">
             <form>
-                <DialogTrigger asChild>
-                    <Button variant="outline">Open Dialog</Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[800px] p-0 gap-0">
-                    <DialogHeader className="border-b border-gray-200 p-5">
-                        <DialogTitle className="flex items-center gap-4"><UserRoundPen className="bg-pink-400 text-white size-13 p-3 rounded-md" />Sửa người dùng</DialogTitle>
-                    </DialogHeader>
-                    <div className="grid grid-cols-2 gap-4 p-5">
+                <DialogHeader className="border-b border-gray-200 p-5">
+                    <DialogTitle className="flex items-center gap-4"><UserRoundPen className="bg-pink-400 text-white size-13 p-3 rounded-md" />
+                        {mode === "add" ? "Thêm người dùng" : "Sửa người dùng"}
+                    </DialogTitle>
+                </DialogHeader>
+                <div className="overflow-auto mb-5">
+                    <div className="grid sm:grid-cols-2 gap-4 p-5 max-h-[400px]">
                         <div className="grid gap-2">
                             <Label htmlFor="email"><Mail size={18} className="text-red-300" />Email</Label>
                             <Input className="h-10" id="email" name="email" placeholder="Nhập email @gmail.com" />
@@ -117,14 +118,14 @@ export function PopupAuth() {
                             </Select>
                         </div>
                     </div>
-                    <DialogFooter className="p-5 pt-0">
-                        <DialogClose asChild>
-                            <Button variant="outline">Đóng</Button>
-                        </DialogClose>
-                        <Button type="submit" className="bg-sky-300 transition-all duration-300">Sửa</Button>
-                    </DialogFooter>
-                </DialogContent>
+                </div>
+                <DialogFooter className="p-5 pt-0">
+                    <DialogClose asChild>
+                        <Button variant="outline">Đóng</Button>
+                    </DialogClose>
+                    <Button type="submit" className="bg-sky-300 transition-all duration-300 cursor-pointer">{mode === "add" ? "Thêm" : "Cập nhật"}</Button>
+                </DialogFooter>
             </form>
-        </Dialog>
+        </DialogContent>
     )
 }
