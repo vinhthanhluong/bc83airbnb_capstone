@@ -1,6 +1,6 @@
 import { House, HousePlus, MapPinned, MessageSquareText, Store, User } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 
 const MENU_DASHBOARD = [
@@ -14,6 +14,7 @@ const MENU_DASHBOARD = [
 
 export default function Sidebar() {
     const itemMenuRef = useRef<HTMLDivElement>(null);
+    const location = useLocation();
 
     const [itemMenuWidth, setItemMenuWidth] = useState<number>(0);
     const [itemMenuHeight, setItemMenuHeight] = useState<number>(0);
@@ -34,6 +35,13 @@ export default function Sidebar() {
         window.addEventListener('resize', handleResize)
         return () => window.removeEventListener('resize', handleResize)
     }, []);
+
+    useEffect(() => {
+        const local = location.pathname.split('/')[2]
+        const isLocal = MENU_DASHBOARD.find(item => item.link === local);
+        setIndexActive(isLocal ? isLocal?.id : 0)
+    }, [location]);
+
 
     return (
         <div className=" fixed bottom-0 md:top-0 left-0 z-10 w-full md:w-70 p-2 md:pr-0 md:pt-5 md:pl-3 bg-gradient-to-r from-sky-300 to-blue-300 md:group-[.menuSmall]:w-20 duration-300 transition-all">
