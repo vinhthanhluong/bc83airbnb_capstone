@@ -21,7 +21,7 @@ export function PopupLocation({ mode, data }: PopupAuthProps) {
     const [date, setDate] = useState<Date | undefined>(undefined)
 
     return (
-        <DialogContent className="sm:max-w-[800px] p-0 gap-0">
+        <DialogContent className="sm:w-[calc(100%-2rem)] sm:max-w-[800px] p-0 gap-0">
             <form>
                 <DialogHeader className="border-b border-gray-200 p-3 sm:p-5">
                     <DialogTitle className="flex items-center gap-4"><MapPinned className="bg-pink-500 text-white size-10 p-2.5 sm:size-13 sm:p-3 rounded-md" />
