@@ -31,8 +31,6 @@ interface PopupAuthProps {
 }
 
 export function PopupRoom({ mode, data }: PopupAuthProps) {
-    const [openDate, setOpenDate] = useState(false)
-    const [date, setDate] = useState<Date | undefined>(undefined)
 
     return (
         <DialogContent className="sm:w-[calc(100%-2rem)] sm:max-w-[800px] p-0 gap-0">
@@ -108,9 +106,9 @@ export function PopupRoom({ mode, data }: PopupAuthProps) {
                             </div>
                         </div>
                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 p-5">
-                            <p className="font-medium mb-0 col-span-3">Tiện ích</p>
+                            <p className="font-medium mb-0 col-span-2 sm:col-span-3 lg:col-span-4">Tiện ích</p>
                             <div className="grid gap-2">
-                                <Label><WashingMachine size={20} className="text-indigo-500" />Máy giặt</Label>
+                                <Label><WashingMachine size={20} className="text-gray-500" />Máy giặt</Label>
                                 <RadioGroup defaultValue="washing2" className="flex gap-4">
                                     <div className="flex items-center gap-1">
                                         <RadioGroupItem value="washing1" id="washing1" />
@@ -123,7 +121,7 @@ export function PopupRoom({ mode, data }: PopupAuthProps) {
                                 </RadioGroup>
                             </div>
                             <div className="grid gap-2">
-                                <Label><Anvil size={20} className="text-indigo-500" />Bàn ủi</Label>
+                                <Label><Anvil size={20} className="text-gray-500" />Bàn ủi</Label>
                                 <RadioGroup defaultValue="iron2" className="flex gap-4">
                                     <div className="flex items-center gap-1">
                                         <RadioGroupItem value="iron1" id="iron1" />
@@ -136,7 +134,7 @@ export function PopupRoom({ mode, data }: PopupAuthProps) {
                                 </RadioGroup>
                             </div>
                             <div className="grid gap-2">
-                                <Label><MonitorStop size={20} className="text-indigo-500" />Tivi</Label>
+                                <Label><MonitorStop size={20} className="text-gray-500" />Tivi</Label>
                                 <RadioGroup defaultValue="tivi2" className="flex gap-4">
                                     <div className="flex items-center gap-1">
                                         <RadioGroupItem value="tivi1" id="tivi1" />
@@ -149,7 +147,7 @@ export function PopupRoom({ mode, data }: PopupAuthProps) {
                                 </RadioGroup>
                             </div>
                             <div className="grid gap-2">
-                                <Label><SunSnow size={20} className="text-indigo-500" />Điều hòa</Label>
+                                <Label><SunSnow size={20} className="text-gray-500" />Điều hòa</Label>
                                 <RadioGroup defaultValue="conditioning2" className="flex gap-4">
                                     <div className="flex items-center gap-1">
                                         <RadioGroupItem value="conditioning1" id="conditioning1" />
@@ -162,7 +160,7 @@ export function PopupRoom({ mode, data }: PopupAuthProps) {
                                 </RadioGroup>
                             </div>
                             <div className="grid gap-2">
-                                <Label><Wifi size={20} className="text-indigo-500" />Wifi</Label>
+                                <Label><Wifi size={20} className="text-gray-500" />Wifi</Label>
                                 <RadioGroup defaultValue="wifi2" className="flex gap-4">
                                     <div className="flex items-center gap-1">
                                         <RadioGroupItem value="wifi1" id="wifi1" />
@@ -175,7 +173,7 @@ export function PopupRoom({ mode, data }: PopupAuthProps) {
                                 </RadioGroup>
                             </div>
                             <div className="grid gap-2">
-                                <Label><ChefHat size={20} className="text-indigo-500" />Bếp</Label>
+                                <Label><ChefHat size={20} className="text-gray-500" />Bếp</Label>
                                 <RadioGroup defaultValue="kitchen2" className="flex gap-4">
                                     <div className="flex items-center gap-1">
                                         <RadioGroupItem value="kitchen1" id="kitchen1" />
@@ -188,7 +186,7 @@ export function PopupRoom({ mode, data }: PopupAuthProps) {
                                 </RadioGroup>
                             </div>
                             <div className="grid gap-2">
-                                <Label><SquareParking size={20} className="text-indigo-500" />Bãi đỗ xe</Label>
+                                <Label><SquareParking size={20} className="text-gray-500" />Bãi đỗ xe</Label>
                                 <RadioGroup defaultValue="parking2" className="flex gap-4">
                                     <div className="flex items-center gap-1">
                                         <RadioGroupItem value="parking1" id="parking1" />
@@ -201,7 +199,7 @@ export function PopupRoom({ mode, data }: PopupAuthProps) {
                                 </RadioGroup>
                             </div>
                             <div className="grid gap-2">
-                                <Label><WavesLadder size={20} className="text-indigo-500" />Hồ bơi</Label>
+                                <Label><WavesLadder size={20} className="text-gray-500" />Hồ bơi</Label>
                                 <RadioGroup defaultValue="pool2" className="flex gap-4">
                                     <div className="flex items-center gap-1">
                                         <RadioGroupItem value="pool1" id="pool1" />
