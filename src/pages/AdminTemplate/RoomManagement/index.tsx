@@ -1,4 +1,4 @@
-import { MapPinPlusInside, SquarePen, Trash2 } from "lucide-react";
+import { MapPinPlusInside, Plus, SquarePen, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -21,12 +21,13 @@ import {
 } from "@/components/ui/select"
 import { Dialog } from "@/components/ui/dialog";
 import { PopupRoom } from "./PopupRoom";
+import { PopupRoomDetail } from "./PopupRoomDetail";
 
 export default function RoomManagement() {
     const [isAction, setIsAction] = useState<boolean>(false);
 
     const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
-    const [mode, setMode] = useState<"add" | "edit" | null>(null);
+    const [mode, setMode] = useState<"add" | "edit" | "detail" | "addRoom" | null>(null);
     const [selectData, setSelectData] = useState(null);
 
     const dataTest = {};
@@ -74,9 +75,14 @@ export default function RoomManagement() {
                                 onClick={() => handleOpenPopup('edit')}
                                 size={20} className="group-[.active]:opacity-100 opacity-0 absolute z-2 top-4 right-4 text-white cursor-pointer hover:text-yellow-300 transition-all duration-300" />
                             <Trash2 size={20} className="group-[.active]:opacity-100 opacity-0 absolute z-2 top-4 left-4 text-white cursor-pointer hover:text-red-400 transition-all duration-300" />
+                            <Plus
+                             onClick={() => handleOpenPopup('addRoom')}
+                             className="absolute inset-0 text-white m-auto cursor-pointer z-2" size={30} />
                         </div>
                         <div className="block text-sm">
-                            <p className="font-medium line-clamp-1 mb-0.5">NewApt D1 - Cozy studio - NU apt - 500m Bui Vien!</p>
+                            <p 
+                            onClick={() => handleOpenPopup('detail')}
+                            className="font-medium line-clamp-1 mb-0.5 cursor-pointer duration-300 transition-all hover:text-blue-500">NewApt D1 - Cozy studio - NU apt - 500m Bui Vien!</p>
                             <div className="flex justify-between items-center">
                                 <p className="line-clamp-1 text-gray-400">Hồ chí minh</p>
                                 <p className="line-clamp-1 text-gray-500 font-medium pl-2 shrink-0">28$</p>
@@ -232,6 +238,7 @@ export default function RoomManagement() {
             <Dialog open={isOpenPopup} onOpenChange={setIsOpenPopup}>
                 {mode === "add" && <PopupRoom mode="add" />}
                 {mode === "edit" && <PopupRoom mode="edit" data={selectData} />}
+                {mode === "detail" && <PopupRoomDetail data={selectData} />}
             </Dialog>
         </div>
     )
