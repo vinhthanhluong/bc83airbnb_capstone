@@ -16,21 +16,18 @@ import {
 import {
     Select,
     SelectContent,
-    SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { Anvil, Bath, Bed, Building2, ChefHat, DollarSign, Earth, Image, MapPin, MapPinned, MonitorStop, NotebookPen, School, SquareParking, Store, SunSnow, Users, WashingMachine, WavesLadder, Wifi, X } from "lucide-react"
-import { useState } from "react";
+import { Anvil, Bath, Bed, ChefHat, DollarSign, Image, MapPin, MonitorStop, NotebookPen, School, SquareParking, Store, SunSnow, Users, WashingMachine, WavesLadder, Wifi, X } from "lucide-react"
 
-interface PopupAuthProps {
+interface RoomPopupProps {
     mode: "add" | "edit",
     data?: any
 }
 
-export function PopupRoom({ mode, data }: PopupAuthProps) {
+export function RoomPopup({ mode, data }: RoomPopupProps) {
 
     return (
         <DialogContent className="sm:w-[calc(100%-2rem)] sm:max-w-[800px] p-0 gap-0">
