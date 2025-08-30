@@ -6,11 +6,11 @@ import {
 import { Anvil, Bath, Bed, ChefHat, DollarSign, MonitorStop, SquareParking, SunSnow, Users, Warehouse, WashingMachine, WavesLadder, Wifi } from "lucide-react"
 import { useState } from "react";
 
-interface PopupRoomDetailProps {
+interface RoomPopupDetailProps {
     data?: any
 }
 
-export function PopupRoomDetail({ data }: PopupRoomDetailProps) {
+export function RoomPopupDetail({ data }: RoomPopupDetailProps) {
     // const [openDate, setOpenDate] = useState<boolean>(false)
 
     return (

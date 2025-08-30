@@ -46,11 +46,6 @@ export function PopupAddRoom({ data }: PopupAuthProps) {
                                 <li>Cấp: Khách hàng</li>
                             </ul>
                             {/* box */}
-                            
-
-
-
-
                             {/* <p className="font-medium mb-0 col-span-2 sm:col-span-3 lg:col-span-4">Tiện ích</p> */}
 
                         </div>
