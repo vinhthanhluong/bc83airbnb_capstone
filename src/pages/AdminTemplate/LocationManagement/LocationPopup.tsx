@@ -11,12 +11,12 @@ import { Label } from "@/components/ui/label"
 import { Building2, Earth, Image, MapPin, MapPinned, X } from "lucide-react"
 import { useState } from "react";
 
-interface PopupAuthProps {
+interface LocationPopupProps {
     mode: "add" | "edit",
     data?: any
 }
 
-export function PopupLocation({ mode, data }: PopupAuthProps) {
+export function LocationPopup({ mode, data }: LocationPopupProps) {
     const [openDate, setOpenDate] = useState(false)
     const [date, setDate] = useState<Date | undefined>(undefined)
 

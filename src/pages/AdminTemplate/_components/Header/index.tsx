@@ -53,7 +53,7 @@ export default function Header() {
         <div className='relative' ref={avatarRef}>
           <div className='flex items-center gap-3' onClick={() => setIsActiveAvatar(!isActiveAvatar)}>
             {/* <img className="size-10 rounded-full cursor-pointer" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="User dropdown" /> */}
-            <div className='cursor-pointer size-10 flex items-center justify-center bg-gray-400 rounded-full'>
+            <div className='cursor-pointer size-10 flex items-center justify-center bg-gradient-to-r from-sky-300 to-blue-300 rounded-full'>
               <p className='text-lg text-white font-medium'>Ad</p>
             </div>
             <div className='font-medium hidden md:block'>Bonnie Green</div>

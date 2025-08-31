@@ -1,4 +1,6 @@
 import { SquarePen, Trash2, UserPlus } from "lucide-react";
+import { useState } from "react";
+
 import {
     Pagination,
     PaginationContent,
@@ -16,26 +18,29 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { PopupAuth } from "./PopupAuth";
 import { Dialog } from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import AuthPopup from "./AuthPopup";
+import AuthItemDetail from "./AuthItemDetail";
 
 export default function AuthManagement() {
 
     const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
-    const [mode, setMode] = useState<"add" | "edit" | null>(null);
+    const [mode, setMode] = useState<"add" | "edit" | "history" | "detail" | null>(null);
     const [selectData, setSelectData] = useState(null);
 
-    const dataTest = {};
     const handleOpenPopup = (modeData: any, data?: any) => {
         setMode(modeData)
         setSelectData(data || null);
         setIsOpenPopup(true);
     }
 
+    const handleValueOpenPopup = (data: string) => {
+        handleOpenPopup(data)
+    }
+
     return (
-        <div>
+        <>
             <div className="relative">
                 <h2 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-5 lg:mb-8">Quản lý người dùng</h2>
                 <Button
@@ -74,76 +79,7 @@ export default function AuthManagement() {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr className="bg-white border-b border-gray-200 hover:bg-gray-50 text-gray-800">
-                                <td className="py-3 px-4">
-                                    <div className="size-12 rounded-full bg-gray-300 rounded overflow-hidden">
-                                        <img className="w-full h-full object-cover" alt="Lật mặt 48h" src="https://movienew.cybersoft.edu.vn/hinhanh/lat-mat-48h_gp01.jpg" />
-                                    </div>
-                                </td>
-                                <td className="py-3 px-4">
-                                    <p className="font-medium">Luong vinh tahnh</p>
-                                </td>
-                                <td className="py-3 px-4">
-                                    <p className="">thanh2508@gmail.com</p>
-                                </td>
-                                <td className="py-3 px-4">
-                                    <p className=" ">thanh2508@gmail.com</p>
-                                </td>
-                                <td className="py-3 px-4">
-                                    <p className="">05/05/1999</p>
-                                </td>
-                                <td className="py-3 px-4">
-                                    <p className="">123123123</p>
-                                </td>
-                                <td className="py-3 px-4">
-                                    <p className="">Nam</p>
-                                </td>
-                                <td className="py-3 px-4">
-                                    <p className="">USER</p>
-                                </td>
-                                <td className="py-3 px-4">
-                                    <div className="flex gap-2">
-                                        <SquarePen className="cursor-pointer text-yellow-500 hover:text-yellow-800" size={20} />
-                                        <Trash2 className="cursor-pointer text-red-500 hover:text-red-800" size={20} />
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr className="bg-white border-b border-gray-200 hover:bg-gray-50 text-gray-800">
-                                <td className="py-3 px-4">
-                                    <div className="size-12 rounded-full bg-gray-300 rounded overflow-hidden">
-                                        <img className="w-full h-full object-cover" alt="Lật mặt 48h" src="https://movienew.cybersoft.edu.vn/hinhanh/lat-mat-48h_gp01.jpg" />
-                                    </div>
-                                </td>
-                                <td className="py-3 px-4">
-                                    <p className="font-medium">Luong vinh tahnh</p>
-                                </td>
-                                <td className="py-3 px-4">
-                                    <p className="">thanh2508@gmail.com</p>
-                                </td>
-                                <td className="py-3 px-4">
-                                    <p className=" ">thanh2508@gmail.com</p>
-                                </td>
-                                <td className="py-3 px-4">
-                                    <p className="">05/05/1999</p>
-                                </td>
-                                <td className="py-3 px-4">
-                                    <p className="">123123123</p>
-                                </td>
-                                <td className="py-3 px-4">
-                                    <p className="">Nam</p>
-                                </td>
-                                <td className="py-3 px-4">
-                                    <p className="">USER</p>
-                                </td>
-                                <td className="py-3 px-4">
-                                    <div className="flex gap-2">
-                                        <SquarePen
-                                            onClick={() => handleOpenPopup('edit', dataTest)}
-                                            className="cursor-pointer text-yellow-500 hover:text-yellow-800" size={20} />
-                                        <Trash2 className="cursor-pointer text-red-500 hover:text-red-800" size={20} />
-                                    </div>
-                                </td>
-                            </tr>
+                            <AuthItemDetail handleValueOpenPopup={handleValueOpenPopup} />
                         </tbody>
                     </table>
                 </div>
@@ -177,9 +113,9 @@ export default function AuthManagement() {
                 </div>
             </div>
             <Dialog open={isOpenPopup} onOpenChange={setIsOpenPopup}>
-                {mode === "add" && <PopupAuth mode="add" />}
-                {mode === "edit" && <PopupAuth mode="edit" data={selectData} />}
+                {mode === "add" && <AuthPopup mode="add" />}
+                {mode === "edit" && <AuthPopup mode="edit" data={selectData} />}
             </Dialog>
-        </div>
+        </>
     )
 }

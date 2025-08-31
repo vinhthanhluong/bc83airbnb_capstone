@@ -5,23 +5,26 @@ import {
 } from "@/components/ui/dialog"
 import { Anvil, Bath, Bed, ChefHat, DollarSign, MonitorStop, SquareParking, SunSnow, Users, Warehouse, WashingMachine, WavesLadder, Wifi } from "lucide-react"
 
-interface RoomPopupDetailProps {
+interface BookingPopupDetailProps {
     data?: any
 }
 
-export default function RoomPopupDetail({ data }: RoomPopupDetailProps) {
+export default function BookingPopupDetail({ data }: BookingPopupDetailProps) {
 
     return (
         <DialogContent className="sm:w-[calc(100%-2rem)] sm:max-w-[800px] p-0 gap-0">
             <DialogHeader className="border-b border-gray-200 p-3 sm:p-5">
                 <DialogTitle className="flex items-center gap-4">
+                    {/* <Store className="bg-pink-500 text-white size-10 p-2.5 sm:size-13 sm:p-3 rounded-md" /> */}
+                    {/* Chi tiết phòng */}
                     NewApt D1 - Cozy studio - NU apt - 500m Bui Vien!
                 </DialogTitle>
             </DialogHeader>
             <div className="overflow-auto mb-5 sm:mb-2">
                 <div className="max-h-[400px]">
                     <div className="block p-6">
-                        <div className="img mb-3">
+                        <div className="img h-[300px] mb-3">
+                            {/* <img src="https://airbnbnew.cybersoft.edu.vn/images/phong2.png" className="max-h-full object-contain" alt="" /> */}
                             <img src="https://airbnbnew.cybersoft.edu.vn/images/vt1.jpg" className="max-h-[300px] w-full object-contain" alt="" />
                         </div>
                         <p className="mb-4">Tự nhận phòng Tự nhận phòng bằng khóa thông minh.Dinh Long là Chủ nhà siêu cấp Chủ nhà siêu cấp là những chủ nhà có kinh nghiệm, được đánh giá cao và là những người cam kết mang lại quãng thời gian ở tuyệt vời cho khách.</p>

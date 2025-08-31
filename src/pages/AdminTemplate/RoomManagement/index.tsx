@@ -1,4 +1,4 @@
-import { MapPinPlusInside, Plus, SquarePen, Trash2 } from "lucide-react";
+import { HousePlus } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -20,16 +20,13 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Dialog } from "@/components/ui/dialog";
-import { RoomPopup } from "./RoomPopup";
-import { RoomPopupDetail } from "./RoomPopupDetail";
+import RoomPopup from "./RoomPopup";
+import RoomPopupDetail from "./RoomPopupDetail";
 import RoomItemDetail from "./RoomItemDetail";
 
 export default function RoomManagement() {
-
-
-
     const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
-    const [mode, setMode] = useState<"add" | "edit" | "detail" | "addRoom" | null>(null);
+    const [mode, setMode] = useState<"add" | "edit" | "detail" | null>(null);
     const [popupData, setPopupData] = useState(null);
 
     const handleOpenPopup = (modeData: any, data?: any) => {
@@ -38,14 +35,18 @@ export default function RoomManagement() {
         setIsOpenPopup(true);
     }
 
+    const handleValueOpenPopup = (data: string) => {
+        handleOpenPopup(data);
+    }
+
     return (
-        <div>
+        <>
             <div className="relative">
                 <h2 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-5 lg:mb-8">Quản lý phòng</h2>
                 <Button
                     onClick={() => handleOpenPopup('add')}
                     variant="outline" className="absolute top-0 md:top-1 right-0 flex items-center gap-2 text-white bg-pink-400 border-pink-400 font-semibold h-full p-2 md:px-3 rounded-md cursor-pointer hover:bg-white hover:text-pink-400 hover:shadow-[0_0_10px_#e396c1] transition-all duration-300">
-                    <MapPinPlusInside />
+                    <HousePlus />
                     Thêm
                 </Button>
             </div>
@@ -66,7 +67,7 @@ export default function RoomManagement() {
 
             <div className="border border-[#eee] rounded-lg shadow-sm w-full">
                 <div className="relative grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6 2xl:gap-5 p-6">
-                    <RoomItemDetail mode={mode} />
+                    <RoomItemDetail handleValueOpenPopup={handleValueOpenPopup} />
                 </div>
                 <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5 border-t border-gray-200">
                     <p className="text-gray-500 text-sm text-center">Hiển thị 14 phòng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng 24 phòng</p>
@@ -102,6 +103,6 @@ export default function RoomManagement() {
                 {mode === "edit" && <RoomPopup mode="edit" data={popupData} />}
                 {mode === "detail" && <RoomPopupDetail data={popupData} />}
             </Dialog>
-        </div>
+        </>
     )
 }
