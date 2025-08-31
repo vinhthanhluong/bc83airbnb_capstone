@@ -25,12 +25,12 @@ import { Calendar } from "@/components/ui/calendar"
 import { CalendarDays, ChevronDownIcon, CircleUser, Image, Mail, Phone, SquareAsterisk, User, UserRoundPen, VenusAndMars, X } from "lucide-react"
 import { useState } from "react";
 
-interface PopupAuthProps {
+interface AuthPopupProps {
     mode: "add" | "edit",
     data?: any
 }
 
-export function PopupAuth({ mode, data }: PopupAuthProps) {
+export default function AuthPopup({ mode, data }: AuthPopupProps) {
     const [openDate, setOpenDate] = useState(false)
     const [date, setDate] = useState<Date | undefined>(undefined)
 
@@ -38,7 +38,8 @@ export function PopupAuth({ mode, data }: PopupAuthProps) {
         <DialogContent className="sm:w-[calc(100%-2rem)] sm:max-w-[800px] p-0 gap-0">
             <form>
                 <DialogHeader className="border-b border-gray-200 p-5">
-                    <DialogTitle className="flex items-center gap-4"><UserRoundPen className="bg-pink-400 text-white size-10 p-2.5 sm:size-13 sm:p-3 rounded-md" />
+                    <DialogTitle className="flex items-center gap-4">
+                        <UserRoundPen className="bg-pink-400 text-white size-10 p-2.5 sm:size-13 sm:p-3 rounded-md" />
                         {mode === "add" ? "Thêm người dùng" : "Sửa người dùng"}
                     </DialogTitle>
                 </DialogHeader>

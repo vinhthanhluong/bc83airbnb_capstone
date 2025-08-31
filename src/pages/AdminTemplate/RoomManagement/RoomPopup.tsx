@@ -27,7 +27,7 @@ interface RoomPopupProps {
     data?: any
 }
 
-export function RoomPopup({ mode, data }: RoomPopupProps) {
+export default function RoomPopup({ mode, data }: RoomPopupProps) {
 
     return (
         <DialogContent className="sm:w-[calc(100%-2rem)] sm:max-w-[800px] p-0 gap-0">
