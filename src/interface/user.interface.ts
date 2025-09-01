@@ -25,8 +25,22 @@ export interface UserPostResponse {
     password: string;
     phone: string;
     birthday: string;
-    // avatar?: null | File;
     gender: boolean;
     role: string;
+}
+
+export interface UserPutResponse {
+    id?: number;
+    name: string;
+    email: string;
+    phone: string;
+    birthday: string;
+    gender: boolean;
+    role: string;
+}
+
+export interface UpdateUserVars {
+    id: number,
+    data: UserPutResponse,
 }
 

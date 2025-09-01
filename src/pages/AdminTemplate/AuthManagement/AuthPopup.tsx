@@ -1,6 +1,6 @@
 import { CalendarDays, ChevronDownIcon, CircleUser, Image, LoaderCircle, Mail, Phone, SquareAsterisk, User, UserRoundPen, VenusAndMars, X } from "lucide-react"
 import { useForm, Controller } from "react-hook-form"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button"
 import {
@@ -26,17 +26,18 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
-import type { UserPostResponse } from "@/interface/user.interface"
-import { useAddUser } from "@/hooks/useUserQuery";
+import type { UserPostResponse, UserPutResponse } from "@/interface/user.interface"
+import { useAddUser, useDetailUser, useUpdateUser } from "@/hooks/useUserQuery";
+import { useUserManagementStore } from "@/store/userManagement.store";
 
 interface AuthPopupProps {
     mode: "add" | "edit",
-    data?: any
 }
 
-export default function AuthPopup({ mode, data }: AuthPopupProps) {
+export default function AuthPopup({ mode }: AuthPopupProps) {
+    const { idUser } = useUserManagementStore();
+
     const [openDate, setOpenDate] = useState(false)
-    // const [date, setDate] = useState<Date | undefined>(undefined)
     const { register,
         handleSubmit,
         watch,
@@ -46,6 +47,7 @@ export default function AuthPopup({ mode, data }: AuthPopupProps) {
         formState: { errors },
     } = useForm<UserPostResponse>({
         defaultValues: {
+            id: 0,
             name: '',
             email: '',
             password: '',
@@ -58,7 +60,10 @@ export default function AuthPopup({ mode, data }: AuthPopupProps) {
     })
 
     // API
+    const { data: dataDetailUser, isLoading: isLoadingDetailUser } = useDetailUser(idUser);
+    // console.log("🌲 ~ AuthPopup ~ dataDetailUser:", dataDetailUser)
     const { mutate: mutateAdd, isPending: isPendingAdd } = useAddUser();
+    const { mutate: mutateUpdate, isPending: isPendingUpdate } = useUpdateUser();
 
     // const avatar = watch("avatar")
     // const previewImage = (file: File | string | undefined) => {
@@ -69,31 +74,56 @@ export default function AuthPopup({ mode, data }: AuthPopupProps) {
     //     const url = URL.createObjectURL(file)
     //     return url
     // }
-
-    const onSubmit = (data: UserPostResponse) => {
-        console.log("🌲 ~ onSubmit ~ data:", data)
-        // const formData = new FormData();
-        // for (const key in data) {
-        //     const value = data[key as keyof UserPostResponse];
-        //     formData.append(key, String(value));
-        // }
-        
-        mutateAdd(data, {
-            onSuccess: () => {
-                reset({
-                    name: '',
-                    email: '',
-                    password: '',
-                    phone: '',
-                    birthday: '',
-                    gender: true,
-                    role: '',
-                })
-            }
+    // GetUserId
+    useEffect(() => {
+        if (!idUser || !dataDetailUser) return;
+        reset({
+            id: dataDetailUser?.id,
+            name: dataDetailUser?.name,
+            email: dataDetailUser?.email,
+            phone: dataDetailUser?.phone,
+            birthday: dataDetailUser?.birthday,
+            gender: dataDetailUser?.gender,
+            role: dataDetailUser?.role,
         })
 
-        // mutateAdd(data)
+    }, [idUser, dataDetailUser , reset]);
 
+    const onSubmit = (data: UserPostResponse) => {
+        console.log("🌲 ~ onSubmit ~ dataDetailUser:", dataDetailUser)
+        if (dataDetailUser?.id) {
+            mutateUpdate({
+                id: dataDetailUser.id,
+                data: data,
+            }, {
+                onSuccess: () => {
+                    reset({
+                        name: '',
+                        email: '',
+                        password: '',
+                        phone: '',
+                        birthday: '',
+                        gender: true,
+                        role: '',
+                    })
+                    
+                }
+            });
+        } else {
+            mutateAdd(data, {
+                onSuccess: () => {
+                    reset({
+                        name: '',
+                        email: '',
+                        password: '',
+                        phone: '',
+                        birthday: '',
+                        gender: true,
+                        role: '',
+                    })
+                }
+            })
+        }
     }
 
     return (
@@ -159,6 +189,7 @@ export default function AuthPopup({ mode, data }: AuthPopupProps) {
                                 render={({ field }) => (
                                     <Select
                                         onValueChange={(val) => field.onChange(val === "nam")}
+                                        value={field.value ? "nam" : "nu"}
                                     >
                                         <SelectTrigger className="w-full min-h-10">
                                             <SelectValue placeholder="Chọn giới tính" />

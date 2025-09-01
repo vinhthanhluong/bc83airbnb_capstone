@@ -1,6 +1,6 @@
 import type { BaseApiResponse } from "@/interface/base.interface";
 import api from "./api"
-import type { ListUser, ListUserPagi, UserPostResponse } from "@/interface/user.interface";
+import type { ListUser, ListUserPagi, UserPostResponse, UserPutResponse } from "@/interface/user.interface";
 
 export const listUserPagiApi = async (pageIndex: number, pageSize: number): Promise<ListUserPagi<ListUser>> => {
     try {
@@ -35,9 +35,22 @@ export const addUserApi = async (data: any): Promise<UserPostResponse> => {
 export const removeUserApi = async (id: number) => {
     try {
         const response = await api.delete(`users?id=${id}`);
-        // return response.data.content;
     } catch (error) {
         console.log("🌲 ~ removeUserApi ~ error:", error)
         throw error
     }
 }
+
+
+
+export const updateUserApi = async (id: number, data: UserPutResponse): Promise<UserPutResponse> => {
+    try {
+        const response = await api.put<BaseApiResponse<UserPutResponse>>(`users/${id}`, data);
+        return response.data.content;
+    } catch (error) {
+        console.log("🌲 ~ removeUserApi ~ error:", error)
+        throw error
+    }
+}
+
+

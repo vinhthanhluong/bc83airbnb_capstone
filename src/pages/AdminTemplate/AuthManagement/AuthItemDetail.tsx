@@ -3,6 +3,8 @@ import { SquarePen, Trash2 } from 'lucide-react';
 import { format } from 'date-fns'
 import { useRemoveUser } from '@/hooks/useUserQuery';
 import { confirmDialog } from '@/utils/dialog';
+import { useState } from 'react';
+import { useUserManagementStore } from '@/store/userManagement.store';
 
 type AuthItemDetailProps = {
     data: ListUser
@@ -10,6 +12,7 @@ type AuthItemDetailProps = {
 }
 export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemDetailProps) {
     const birthday = data.birthday.replaceAll('-', '/').slice(0, 10)
+    const { setIdUser } = useUserManagementStore();
 
     // API
     const { mutate: mutateRemove, isPending: isPendingRemove } = useRemoveUser();
@@ -66,7 +69,10 @@ export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemD
             <td className="py-3 px-4">
                 <div className="flex gap-2">
                     <SquarePen
-                        onClick={() => handleValueOpenPopup('edit')}
+                        onClick={() => {
+                            handleValueOpenPopup('edit')
+                            setIdUser(data.id)
+                        }}
                         className="cursor-pointer text-yellow-500 hover:text-yellow-800" size={20} />
                     <Trash2 onClick={() => handleDelete(data.id)} className="cursor-pointer text-red-500 hover:text-red-800" size={20} />
                 </div>
