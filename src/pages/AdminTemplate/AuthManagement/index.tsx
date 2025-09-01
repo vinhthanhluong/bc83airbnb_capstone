@@ -1,15 +1,7 @@
 import { SquarePen, Trash2, UserPlus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination";
+
 import { Input } from "@/components/ui/input";
 import {
     Select,
@@ -20,24 +12,32 @@ import {
 } from "@/components/ui/select"
 import { Dialog } from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
+
+import type { ListUser } from "@/interface/user.interface";
 import AuthPopup from "./AuthPopup";
 import AuthItemDetail from "./AuthItemDetail";
+import { useListUserPagi } from "@/hooks/useUserQuery";
+import PaginationCustom from "../_components/PaginationCustom";
+import Loading from "@/components/layouts/Loading";
+import { useUserManagementStore } from "@/store/userManagement.store";
 
 export default function AuthManagement() {
+    // store
+    const { isPopup, setIsPopup, pagi } = useUserManagementStore();
 
-    const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
     const [mode, setMode] = useState<"add" | "edit" | "history" | "detail" | null>(null);
     const [selectData, setSelectData] = useState(null);
 
+    // Handle
     const handleOpenPopup = (modeData: any, data?: any) => {
         setMode(modeData)
         setSelectData(data || null);
-        setIsOpenPopup(true);
+        setIsPopup();
     }
+    const handleValueOpenPopup = (data: string) => handleOpenPopup(data)
 
-    const handleValueOpenPopup = (data: string) => {
-        handleOpenPopup(data)
-    }
+    // API
+    const { data: dataListUser, isLoading: isLoadingListUser } = useListUserPagi(pagi, 10);
 
     return (
         <>
@@ -79,40 +79,23 @@ export default function AuthManagement() {
                             </tr>
                         </thead>
                         <tbody>
-                            <AuthItemDetail handleValueOpenPopup={handleValueOpenPopup} />
+                            {dataListUser?.data.map((item: ListUser, index: number) => {
+                                return <AuthItemDetail key={index} handleValueOpenPopup={handleValueOpenPopup} data={item} />
+                            })}
                         </tbody>
                     </table>
+
+                    {isLoadingListUser && <Loading />}
                 </div>
                 <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5">
-                    <p className="text-gray-500 text-sm text-center">Hiển thị 5 người dùng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng 24 người dùng</p>
+                    <p className="text-gray-500 text-sm text-center">Hiển thị {dataListUser?.pageSize} người dùng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListUser?.totalRow} người dùng</p>
 
                     <div className="block">
-                        <Pagination>
-                            <PaginationContent>
-                                <PaginationItem>
-                                    <PaginationPrevious />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink>1</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink>2</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink>10</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationNext />
-                                </PaginationItem>
-                            </PaginationContent>
-                        </Pagination>
+                        <PaginationCustom pageIndex={dataListUser?.pageIndex} pageSize={dataListUser?.pageSize} totalRow={dataListUser?.totalRow} />
                     </div>
                 </div>
             </div>
-            <Dialog open={isOpenPopup} onOpenChange={setIsOpenPopup}>
+            <Dialog open={isPopup} onOpenChange={setIsPopup}>
                 {mode === "add" && <AuthPopup mode="add" />}
                 {mode === "edit" && <AuthPopup mode="edit" data={selectData} />}
             </Dialog>
