@@ -26,12 +26,12 @@ export default function AuthManagement() {
     const { isPopup, setIsPopup, pagi } = useUserManagementStore();
 
     const [mode, setMode] = useState<"add" | "edit" | "history" | "detail" | null>(null);
-    const [selectData, setSelectData] = useState(null);
+    // const [selectData, setSelectData] = useState(null);
 
     // Handle
     const handleOpenPopup = (modeData: any, data?: any) => {
         setMode(modeData)
-        setSelectData(data || null);
+        // setSelectData(data || null);
         setIsPopup();
     }
     const handleValueOpenPopup = (data: string) => handleOpenPopup(data)
@@ -97,7 +97,7 @@ export default function AuthManagement() {
             </div>
             <Dialog open={isPopup} onOpenChange={setIsPopup}>
                 {mode === "add" && <AuthPopup mode="add" />}
-                {mode === "edit" && <AuthPopup mode="edit" data={selectData} />}
+                {mode === "edit" && <AuthPopup mode="edit" />}
             </Dialog>
         </>
     )
