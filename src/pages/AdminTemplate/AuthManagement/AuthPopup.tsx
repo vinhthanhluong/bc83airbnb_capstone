@@ -61,7 +61,6 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
 
     // API
     const { data: dataDetailUser, isLoading: isLoadingDetailUser } = useDetailUser(idUser);
-    // console.log("🌲 ~ AuthPopup ~ dataDetailUser:", dataDetailUser)
     const { mutate: mutateAdd, isPending: isPendingAdd } = useAddUser();
     const { mutate: mutateUpdate, isPending: isPendingUpdate } = useUpdateUser();
 

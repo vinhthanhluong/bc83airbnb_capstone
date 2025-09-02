@@ -1,5 +1,6 @@
 import { UserPlus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -14,12 +15,14 @@ import { Button } from "@/components/ui/button";
 import type { ListUser } from "@/interface/user.interface";
 import AuthPopup from "./AuthPopup";
 import AuthItemDetail from "./AuthItemDetail";
-import { useListUserPagi } from "@/hooks/useUserQuery";
+import { useListUserPagi, useSearchUser } from "@/hooks/useUserQuery";
 import PaginationCustom from "../_components/PaginationCustom";
 import Loading from "@/components/layouts/Loading";
 import { useUserManagementStore } from "@/store/userManagement.store";
 import { usepaginationStore } from "@/store/pagination.store";
 import AuthPopupImg from "./AuthPopupImg";
+import { SelectGroup } from "@radix-ui/react-select";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export default function AuthManagement() {
     // Store
@@ -28,6 +31,7 @@ export default function AuthManagement() {
 
     // State
     const [mode, setMode] = useState<"add" | "edit" | "history" | "detail" | "editImg" | null>(null);
+    const [listUserCustom, setListUserCustom] = useState<ListUser[] | null>(null);
 
     // Handle
     const handleOpenPopup = (modeData: any, data?: any) => {
@@ -36,8 +40,39 @@ export default function AuthManagement() {
     }
     const handleValueOpenPopup = (data: string) => handleOpenPopup(data)
 
+    // Form
+    const { register, handleSubmit, watch, control } = useForm<{ keyword: string, select: string }>({
+        defaultValues: {
+            keyword: '',
+            select: 'all',
+        }
+    })
+
+    const keywordSearch = watch('keyword');
+    const selectSearch = watch('select');
+
     // API
+    const debounceKeyword = useDebounce(keywordSearch, 500);
     const { data: dataListUser, isLoading: isLoadingListUser } = useListUserPagi(userPagi, 10);
+    const { data: dataSearchUser, isLoading: isLoadingSearchUser } = useSearchUser(debounceKeyword);
+
+    // --- Effect: Type,Search user ---
+    useEffect(() => {
+        let source: ListUser[] = [];
+
+        if (debounceKeyword) {
+            source = dataSearchUser || [];
+        } else {
+            source = dataListUser?.data || []
+        }
+
+        if (selectSearch) {
+            const filterData = source.filter((item: ListUser) => item.role.toLowerCase() === selectSearch.toLowerCase());
+            source = filterData.length > 0 ? filterData : dataListUser?.data || [];
+        }
+
+        setListUserCustom(source);
+    }, [dataSearchUser, dataListUser, selectSearch, debounceKeyword]);
 
     return (
         <>
@@ -51,18 +86,36 @@ export default function AuthManagement() {
                     variant="outline" className="absolute top-0 md:top-1 right-0 flex items-center gap-2 text-white bg-pink-400 border-pink-400 font-semibold h-full p-2 md:px-3 rounded-md cursor-pointer hover:bg-white hover:text-pink-400 hover:shadow-[0_0_10px_#e396c1] transition-all duration-300"><UserPlus size={20} /> Thêm</Button>
             </div>
 
-            <div className="mb-6 flex gap-2 sp400:gap-4">
-                <Input placeholder="Tìm người dùng" className="max-w-85 h-10" />
-                <Select defaultValue="user">
-                    <SelectTrigger className="w-[180px] min-h-10">
-                        <SelectValue placeholder="Loại" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">Tất cả</SelectItem>
-                        <SelectItem value="user">Khách hàng</SelectItem>
-                        <SelectItem value="admin">Quản trị</SelectItem>
-                    </SelectContent>
-                </Select>
+            <div className="mb-6 ">
+                <form
+                    className="flex gap-2 sp400:gap-4">
+                    <Input placeholder="Tìm người dùng" className="max-w-85 h-10"  {...register("keyword")} />
+                    <div className="w-50">
+                        <Controller
+                            name="select"
+                            control={control}
+                            defaultValue="all"
+                            render={({ field }) => (
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                >
+                                    <SelectTrigger className="w-full min-h-10">
+                                        <SelectValue placeholder="Chọn giới tính" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectItem value="all">Tất cả</SelectItem>
+                                            <SelectItem value="user">Khách hàng</SelectItem>
+                                            <SelectItem value="admin">Quản trị</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
+                    </div>
+                </form>
+
             </div>
 
             <div className="border border-[#eee] rounded-lg shadow-sm w-full ">
@@ -82,9 +135,20 @@ export default function AuthManagement() {
                             </tr>
                         </thead>
                         <tbody>
-                            {dataListUser?.data.map((item: ListUser, index: number) => {
-                                return <AuthItemDetail key={index} handleValueOpenPopup={handleValueOpenPopup} data={item} />
-                            })}
+                            {listUserCustom && listUserCustom?.length > 0 ? (
+                                listUserCustom?.map((item: ListUser, index: number) => {
+                                    return <AuthItemDetail key={index} handleValueOpenPopup={handleValueOpenPopup} data={item} />
+                                })
+                            ) : (
+                                <tr>
+                                    <td colSpan={9} className="text-center p-5 text-gray-400">
+                                        {debounceKeyword
+                                            ? `Không tìm thấy kết quả cho "${debounceKeyword}"`
+                                            : "Không có dữ liệu"}
+                                    </td>
+                                </tr>
+                            )
+                            }
                         </tbody>
                     </table>
 
@@ -92,7 +156,6 @@ export default function AuthManagement() {
                 </div>
                 <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5">
                     <p className="text-gray-500 text-sm text-center">Hiển thị {dataListUser?.pageSize} người dùng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListUser?.totalRow} người dùng</p>
-
                     <div className="block">
                         <PaginationCustom setPagi={setUserPagi} pageIndex={dataListUser?.pageIndex} pageSize={dataListUser?.pageSize} totalRow={dataListUser?.totalRow} />
                     </div>
