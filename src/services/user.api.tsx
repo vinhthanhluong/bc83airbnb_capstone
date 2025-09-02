@@ -61,5 +61,15 @@ export const updateUserImageApi = async (data: FormData) => {
     }
 }
 
+export const searchUserApi = async (keyword: any): Promise<ListUser[]> => {
+    try {
+        const response = await api.get<BaseApiResponse<ListUser[]>>(`users/search/${keyword}`);
+        return response.data.content;
+    } catch (error) {
+        console.log("🌲 ~ updateUserImageApi ~ error:", error)
+        throw error
+    }
+}
+
 
 

@@ -1,5 +1,5 @@
 import type { UpdateUserVars, UserPutResponse } from "@/interface/user.interface"
-import { listUserPagiApi, addUserApi, removeUserApi, detailUserApi, updateUserApi, updateUserImageApi } from "@/services/user.api"
+import { listUserPagiApi, addUserApi, removeUserApi, detailUserApi, updateUserApi, updateUserImageApi, searchUserApi } from "@/services/user.api"
 import { useUserManagementStore } from "@/store/userManagement.store"
 import { showDialog } from "@/utils/dialog"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -120,6 +120,15 @@ export const useUpdateUserImage = (optional?: {}) => {
                 text: error?.response?.data?.content
             })
         },
+        ...optional
+    })
+}
+
+export const useSearchUser = (keyword: string, optional?: {}) => {
+    return useQuery({
+        queryKey: ['detail-user', keyword],
+        queryFn: () => searchUserApi(keyword),
+        enabled: !!keyword,
         ...optional
     })
 }
