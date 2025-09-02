@@ -1,6 +1,5 @@
-import { SquarePen, Trash2, UserPlus } from "lucide-react";
-import { useEffect, useState } from "react";
-
+import { UserPlus } from "lucide-react";
+import { useState } from "react";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -12,7 +11,6 @@ import {
 } from "@/components/ui/select"
 import { Dialog } from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
-
 import type { ListUser } from "@/interface/user.interface";
 import AuthPopup from "./AuthPopup";
 import AuthItemDetail from "./AuthItemDetail";
@@ -20,31 +18,36 @@ import { useListUserPagi } from "@/hooks/useUserQuery";
 import PaginationCustom from "../_components/PaginationCustom";
 import Loading from "@/components/layouts/Loading";
 import { useUserManagementStore } from "@/store/userManagement.store";
+import { usepaginationStore } from "@/store/pagination.store";
+import AuthPopupImg from "./AuthPopupImg";
 
 export default function AuthManagement() {
-    // store
-    const { isPopup, setIsPopup, pagi } = useUserManagementStore();
+    // Store
+    const { isPopup, setIsPopup, setIdUser } = useUserManagementStore();
+    const { userPagi, setUserPagi } = usepaginationStore();
 
-    const [mode, setMode] = useState<"add" | "edit" | "history" | "detail" | null>(null);
-    // const [selectData, setSelectData] = useState(null);
+    // State
+    const [mode, setMode] = useState<"add" | "edit" | "history" | "detail" | "editImg" | null>(null);
 
     // Handle
     const handleOpenPopup = (modeData: any, data?: any) => {
         setMode(modeData)
-        // setSelectData(data || null);
         setIsPopup();
     }
     const handleValueOpenPopup = (data: string) => handleOpenPopup(data)
 
     // API
-    const { data: dataListUser, isLoading: isLoadingListUser } = useListUserPagi(pagi, 10);
+    const { data: dataListUser, isLoading: isLoadingListUser } = useListUserPagi(userPagi, 10);
 
     return (
         <>
             <div className="relative">
                 <h2 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-5 lg:mb-8">Quản lý người dùng</h2>
                 <Button
-                    onClick={() => handleOpenPopup('add')}
+                    onClick={() => {
+                        handleOpenPopup('add')
+                        setIdUser(0)
+                    }}
                     variant="outline" className="absolute top-0 md:top-1 right-0 flex items-center gap-2 text-white bg-pink-400 border-pink-400 font-semibold h-full p-2 md:px-3 rounded-md cursor-pointer hover:bg-white hover:text-pink-400 hover:shadow-[0_0_10px_#e396c1] transition-all duration-300"><UserPlus size={20} /> Thêm</Button>
             </div>
 
@@ -67,7 +70,7 @@ export default function AuthManagement() {
                     <table className="w-full text-sm text-left text-gray-500 min-w-[1240px]">
                         <thead className="bg-gray-50">
                             <tr>
-                                <th className="py-3 px-4 font-medium text-gray-600 w-[7%]">Avatar</th>
+                                <th className="py-3 px-4 pl-6 font-medium text-gray-600 w-[7%]">Avatar</th>
                                 <th className="py-3 px-4 font-medium text-gray-600 w-[13%]">Họ và tên</th>
                                 <th className="py-3 px-4 font-medium text-gray-600 w-[13%]">Email</th>
                                 <th className="py-3 px-4 font-medium text-gray-600 w-[11%]">Mật khẩu</th>
@@ -91,13 +94,14 @@ export default function AuthManagement() {
                     <p className="text-gray-500 text-sm text-center">Hiển thị {dataListUser?.pageSize} người dùng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListUser?.totalRow} người dùng</p>
 
                     <div className="block">
-                        <PaginationCustom pageIndex={dataListUser?.pageIndex} pageSize={dataListUser?.pageSize} totalRow={dataListUser?.totalRow} />
+                        <PaginationCustom setPagi={setUserPagi} pageIndex={dataListUser?.pageIndex} pageSize={dataListUser?.pageSize} totalRow={dataListUser?.totalRow} />
                     </div>
                 </div>
             </div>
             <Dialog open={isPopup} onOpenChange={setIsPopup}>
                 {mode === "add" && <AuthPopup mode="add" />}
                 {mode === "edit" && <AuthPopup mode="edit" />}
+                {mode === "editImg" && <AuthPopupImg />}
             </Dialog>
         </>
     )

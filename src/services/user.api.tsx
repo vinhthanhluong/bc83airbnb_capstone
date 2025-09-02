@@ -22,12 +22,12 @@ export const detailUserApi = async (id: number) => {
     }
 }
 
-export const addUserApi = async (data: any): Promise<UserPostResponse> => {
+export const addUserApi = async (data: UserPostResponse): Promise<UserPostResponse> => {
     try {
         const response = await api.post<BaseApiResponse<UserPostResponse>>(`users`, data);
         return response.data.content;
     } catch (error) {
-        console.log("🌲 ~ UserPostApi ~ error:", error)
+        console.log("🌲 ~ addUserApi ~ error:", error)
         throw error
     }
 }
@@ -41,16 +41,25 @@ export const removeUserApi = async (id: number) => {
     }
 }
 
-
-
 export const updateUserApi = async (id: number, data: UserPutResponse): Promise<UserPutResponse> => {
     try {
         const response = await api.put<BaseApiResponse<UserPutResponse>>(`users/${id}`, data);
         return response.data.content;
     } catch (error) {
-        console.log("🌲 ~ removeUserApi ~ error:", error)
+        console.log("🌲 ~ updateUserApi ~ error:", error)
         throw error
     }
 }
+
+export const updateUserImageApi = async (data: FormData) => {
+    try {
+        const response = await api.post<BaseApiResponse<ListUser>>(`users/upload-avatar`, data);
+        return response.data.content;
+    } catch (error) {
+        console.log("🌲 ~ updateUserImageApi ~ error:", error)
+        throw error
+    }
+}
+
 
 

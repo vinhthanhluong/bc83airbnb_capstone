@@ -44,3 +44,7 @@ export interface UpdateUserVars {
     data: UserPutResponse,
 }
 
+export interface UpdateUserImage<T> {
+    token: string,
+    data: T,
+}

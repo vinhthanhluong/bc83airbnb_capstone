@@ -10,7 +10,7 @@ api.interceptors.request.use((config: any) => {
     const userLocal: string | null = localStorage.getItem('user');
     const userParsed: AuthApiResponse<CurrentUser> = userLocal ? JSON.parse(userLocal) : null;
     const userToken = userParsed ? userParsed.token : null;
-
+    // console.log("🌲 ~ gửi request với token:", userToken);
     return {
         ...config,
         headers: {

@@ -1,4 +1,4 @@
-import { CalendarDays, ChevronDownIcon, CircleUser, Image, LoaderCircle, Mail, Phone, SquareAsterisk, User, UserRoundPen, VenusAndMars, X } from "lucide-react"
+import { CalendarDays, ChevronDownIcon, CircleUser, LoaderCircle, Mail, Phone, SquareAsterisk, User, UserRoundPen, VenusAndMars } from "lucide-react"
 import { useForm, Controller } from "react-hook-form"
 import { useEffect, useState } from "react";
 
@@ -26,7 +26,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
-import type { UserPostResponse, UserPutResponse } from "@/interface/user.interface"
+import type { UserPostResponse } from "@/interface/user.interface"
 import { useAddUser, useDetailUser, useUpdateUser } from "@/hooks/useUserQuery";
 import { useUserManagementStore } from "@/store/userManagement.store";
 
@@ -74,6 +74,7 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
     //     const url = URL.createObjectURL(file)
     //     return url
     // }
+
     // GetUserId
     useEffect(() => {
         if (!idUser || !dataDetailUser) return;
@@ -87,27 +88,13 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
             role: dataDetailUser?.role,
         })
 
-    }, [idUser, dataDetailUser , reset]);
+    }, [idUser, dataDetailUser, reset]);
 
     const onSubmit = (data: UserPostResponse) => {
-        console.log("🌲 ~ onSubmit ~ dataDetailUser:", dataDetailUser)
         if (dataDetailUser?.id) {
             mutateUpdate({
                 id: dataDetailUser.id,
                 data: data,
-            }, {
-                onSuccess: () => {
-                    reset({
-                        name: '',
-                        email: '',
-                        password: '',
-                        phone: '',
-                        birthday: '',
-                        gender: true,
-                        role: '',
-                    })
-                    
-                }
             });
         } else {
             mutateAdd(data, {
@@ -141,15 +128,15 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
                             <Label htmlFor="email"><Mail size={18} className="text-red-300" />Email</Label>
                             <Input className="h-10" id="email" placeholder="Nhập email @gmail.com" {...register("email")} />
                         </div>
-                        <div className="grid gap-2">
+                        {mode === "add" && <div className="grid gap-2">
                             <Label htmlFor="password"><SquareAsterisk size={18} className="text-blue-300" />Mật khẩu</Label>
                             <Input className="h-10" id="password" placeholder="Nhập mật khẩu" {...register("password")} />
-                        </div>
+                        </div>}
                         <div className="grid gap-2">
                             <Label htmlFor="name"><User size={20} className="text-yellow-400" />Họ tên</Label>
                             <Input className="h-10" id="name" placeholder="Nhập họ tên" {...register("name")} />
                         </div>
-                        <div className="grid gap-4 row-span-3">
+                        {/* <div className="grid gap-4 row-span-3">
                             <div className="block space-y-2">
                                 <Label htmlFor="picture"><Image size={18} className="text-green-400" />Avatar</Label>
                                 <div className="relative flex items-center justify-center w-full">
@@ -161,7 +148,7 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
                                             <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
                                             <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
                                         </div>
-                                        {/* <img src={previewImage(avatar)} className="w-full max-h-full object-contain" alt="" /> */}
+                                        <img src={previewImage(avatar)} className="w-full max-h-full object-contain" alt="" />
                                         <input id="dropzone-file" type="file" accept='.png,jpeg,.jpg' className="hidden"
                                         // onClick={(e: React.MouseEvent<HTMLInputElement>) => {
                                         //     const file = e.currentTarget.files?.[0];
@@ -176,7 +163,7 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
                                         className="absolute z-2 top-1 right-1 cursor-pointer hover:text-red-400 transition-all duration-300" />
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                         <div className="grid gap-2">
                             <Label htmlFor="phone"><Phone size={18} className="text-green-400" />Số điện thoại</Label>
                             <Input className="h-10" id="phone" placeholder="Nhập số điện thoại" {...register("phone")} />
@@ -267,7 +254,7 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
                         <Button variant="outline">Đóng</Button>
                     </DialogClose>
                     <Button type="submit" className="bg-sky-300 transition-all duration-300 cursor-pointer">
-                        {isPendingAdd && <LoaderCircle className="animate-spin" />}
+                        {isPendingAdd || isPendingUpdate && <LoaderCircle className="animate-spin" />}
                         {mode === "add" ? "Thêm" : "Cập nhật"}
                     </Button>
                 </DialogFooter>
