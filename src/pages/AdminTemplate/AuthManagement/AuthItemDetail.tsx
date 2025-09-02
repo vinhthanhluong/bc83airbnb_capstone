@@ -1,5 +1,5 @@
 import type { ListUser } from '@/interface/user.interface';
-import { SquarePen, Trash2 } from 'lucide-react';
+import { Pencil, SquarePen, Trash2 } from 'lucide-react';
 import { format } from 'date-fns'
 import { useRemoveUser } from '@/hooks/useUserQuery';
 import { confirmDialog } from '@/utils/dialog';
@@ -12,11 +12,16 @@ type AuthItemDetailProps = {
 }
 export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemDetailProps) {
     const birthday = data.birthday.replaceAll('-', '/').slice(0, 10)
+    // Store
     const { setIdUser } = useUserManagementStore();
 
+    // State
+    const [isAction, setIsAction] = useState<boolean>(false);
+    
     // API
     const { mutate: mutateRemove, isPending: isPendingRemove } = useRemoveUser();
 
+    // Handle
     const handleDelete = (id: number) => {
         confirmDialog({
             title: "Bạn có chắc chắn xóa không"
@@ -29,8 +34,12 @@ export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemD
 
     return (
         <tr className="bg-white border-b border-gray-200 hover:bg-gray-50 text-gray-800">
-            <td className="py-3 px-4">
-                <div className="size-12 rounded-full bg-gray-300 rounded overflow-hidden">
+            <td className="py-3 px-4 pl-6">
+                <div
+                    onMouseOver={() => setIsAction(true)}
+                    onMouseLeave={() => setIsAction(false)}
+                    onClick={() => handleValueOpenPopup('editImg')}
+                    className={`group ${isAction ? " active" : ""} size-12 rounded-full bg-gray-300 rounded overflow-hidden cursor-pointer relative`}>
                     {
                         data.avatar ?
                             (<img className="w-full h-full object-cover" alt={data.name} src={data.avatar} />) :
@@ -42,6 +51,9 @@ export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemD
                                 </div>
                             )
                     }
+                    <div className='group-[.active]:opacity-100 absolute inset-0 bg-gray-200/40 flex items-center justify-center transition-all duration-300 opacity-0'>
+                        <Pencil className='text-gray-800' size={18} />
+                    </div>
                 </div>
             </td>
             <td className="py-3 px-4">
