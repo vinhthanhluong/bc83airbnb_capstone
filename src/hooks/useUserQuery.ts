@@ -6,10 +6,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 
 
-export const useListUserPagi = (pageIndex: number, pageSize: number, optional?: {}) => {
+export const useListUserPagi = (pageIndex: number, pageSize: number, key?: string, optional?: {}) => {
     return useQuery({
-        queryKey: ['list-user', pageIndex, pageSize],
-        queryFn: () => listUserPagiApi(pageIndex, pageSize),
+        queryKey: ['list-user', pageIndex, pageSize, key],
+        queryFn: () => listUserPagiApi(pageIndex, pageSize, key),
         ...optional
     })
 }

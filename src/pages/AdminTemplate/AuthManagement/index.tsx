@@ -32,10 +32,9 @@ export default function AuthManagement() {
     // State
     const [mode, setMode] = useState<"add" | "edit" | "history" | "detail" | "editImg" | null>(null);
     const [listUserCustom, setListUserCustom] = useState<ListUser[] | null>(null);
-    console.log("🌲 ~ AuthManagement ~ listUserCustom:", listUserCustom)
 
     // Handle
-    const handleOpenPopup = (modeData: any, data?: any) => {
+    const handleOpenPopup = (modeData: any) => {
         setMode(modeData)
         setIsPopup();
     }
@@ -54,26 +53,36 @@ export default function AuthManagement() {
 
     // API
     const debounceKeyword = useDebounce(keywordSearch, 500);
-    const { data: dataListUser, isLoading: isLoadingListUser } = useListUserPagi(userPagi, 10);
-    const { data: dataSearchUser, isLoading: isLoadingSearchUser } = useSearchUser(debounceKeyword);
+    const { data: dataListUser, isLoading: isLoadingListUser } = useListUserPagi(userPagi, 10, debounceKeyword);
+    console.log("🌲 ~ AuthManagement ~ dataListUser:", dataListUser)
+    // const { data: dataSearchUser, isLoading: isLoadingSearchUser } = useSearchUser(debounceKeyword);
 
     // --- Effect: Type,Search user ---
     useEffect(() => {
-        let source: ListUser[] = [];
-
-        if (debounceKeyword) {
-            source = dataSearchUser || [];
-        } else {
-            source = dataListUser?.data || []
-        }
-
+        let source: ListUser[] = dataListUser?.data || [];
         if (selectSearch !== 'all') {
             const filterData = source.filter((item: ListUser) => item.role.toLowerCase() === selectSearch.toLowerCase());
             source = filterData.length > 0 ? filterData : [];
         }
-
         setListUserCustom(source);
-    }, [dataSearchUser, dataListUser, selectSearch, debounceKeyword]);
+    }, [dataListUser, selectSearch, debounceKeyword]);
+    // Search All not pagination
+    // useEffect(() => {
+    //     let source: ListUser[] = [];
+
+    //     if (debounceKeyword) {
+    //         source = dataSearchUser || [];
+    //     } else {
+    //         source = dataListUser?.data || []
+    //     }
+
+    //     if (selectSearch !== 'all') {
+    //         const filterData = source.filter((item: ListUser) => item.role.toLowerCase() === selectSearch.toLowerCase());
+    //         source = filterData.length > 0 ? filterData : [];
+    //     }
+
+    //     setListUserCustom(source);
+    // }, [dataSearchUser, dataListUser, selectSearch, debounceKeyword]);
 
     return (
         <>
@@ -155,12 +164,12 @@ export default function AuthManagement() {
 
                     {isLoadingListUser && <Loading />}
                 </div>
-                {!debounceKeyword && <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5 border-t border-gray-200">
+                <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5 border-t border-gray-200">
                     <p className="text-gray-500 text-sm text-center">Hiển thị {dataListUser?.pageSize} người dùng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListUser?.totalRow} người dùng</p>
                     <div className="block">
                         <PaginationCustom setPagi={setUserPagi} pageIndex={dataListUser?.pageIndex} pageSize={dataListUser?.pageSize} totalRow={dataListUser?.totalRow} />
                     </div>
-                </div>}
+                </div>
             </div>
             <Dialog open={isPopup} onOpenChange={setIsPopup}>
                 {mode === "add" && <AuthPopup mode="add" />}
