@@ -32,6 +32,7 @@ export default function AuthManagement() {
     // State
     const [mode, setMode] = useState<"add" | "edit" | "history" | "detail" | "editImg" | null>(null);
     const [listUserCustom, setListUserCustom] = useState<ListUser[] | null>(null);
+    console.log("🌲 ~ AuthManagement ~ listUserCustom:", listUserCustom)
 
     // Handle
     const handleOpenPopup = (modeData: any, data?: any) => {
@@ -41,7 +42,7 @@ export default function AuthManagement() {
     const handleValueOpenPopup = (data: string) => handleOpenPopup(data)
 
     // Form
-    const { register, handleSubmit, watch, control } = useForm<{ keyword: string, select: string }>({
+    const { register, watch, control } = useForm<{ keyword: string, select: string }>({
         defaultValues: {
             keyword: '',
             select: 'all',
@@ -66,9 +67,9 @@ export default function AuthManagement() {
             source = dataListUser?.data || []
         }
 
-        if (selectSearch) {
+        if (selectSearch !== 'all') {
             const filterData = source.filter((item: ListUser) => item.role.toLowerCase() === selectSearch.toLowerCase());
-            source = filterData.length > 0 ? filterData : dataListUser?.data || [];
+            source = filterData.length > 0 ? filterData : [];
         }
 
         setListUserCustom(source);
@@ -154,12 +155,12 @@ export default function AuthManagement() {
 
                     {isLoadingListUser && <Loading />}
                 </div>
-                <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5">
+                {!debounceKeyword && <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5 border-t border-gray-200">
                     <p className="text-gray-500 text-sm text-center">Hiển thị {dataListUser?.pageSize} người dùng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListUser?.totalRow} người dùng</p>
                     <div className="block">
                         <PaginationCustom setPagi={setUserPagi} pageIndex={dataListUser?.pageIndex} pageSize={dataListUser?.pageSize} totalRow={dataListUser?.totalRow} />
                     </div>
-                </div>
+                </div>}
             </div>
             <Dialog open={isPopup} onOpenChange={setIsPopup}>
                 {mode === "add" && <AuthPopup mode="add" />}
