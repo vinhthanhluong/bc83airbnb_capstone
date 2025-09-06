@@ -87,7 +87,7 @@ export default function AuthManagement() {
     return (
         <>
             <div className="relative">
-                <h2 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-5 lg:mb-8">Quản lý người dùng</h2>
+                <h2 className="text-xl lg:text-3xl font-bold text-gray-800 mb-5 lg:mb-8">Quản lý người dùng</h2>
                 <Button
                     onClick={() => {
                         handleOpenPopup('add')

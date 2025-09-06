@@ -1,6 +1,6 @@
 import type { BaseApiResponse } from "@/interface/base.interface";
 import api from "./api"
-import type { LocationItem, LocationPagi } from "@/interface/location.inter";
+import type { LocationItem, LocationPagi } from "@/interface/location.interface";
 
 export const listLocationApi = async (pageIndex: number, pageSize: number, keyword?: string): Promise<LocationPagi<LocationItem>> => {
     try {

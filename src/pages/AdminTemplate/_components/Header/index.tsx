@@ -49,7 +49,7 @@ export default function Header() {
         </div>
 
         <div className='md:hidden'>
-          <p className='text-3xl font-bold text-pink-200'>{user?.user.name}</p>
+          <p className='text-3xl font-bold text-pink-200'>LaniBnB</p>
         </div>
 
         {/* Avatar */}

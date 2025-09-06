@@ -12,21 +12,40 @@ import { Dialog } from "@/components/ui/dialog";
 
 import BookingItemDetail from "./BookingItemDetail";
 import BookingPopupDetail from "./BookingPopupDetail";
+import { bookingManagementStore } from "@/store/bookingManagement.store";
+import { useDetailBooking } from "@/hooks/useBookingQuery";
+import { useParams } from "react-router-dom";
+import type { BookingItem } from "@/interface/booking.interface";
 
 export default function BookingManagement() {
-    const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
+    // State
+    // const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
     const [mode, setMode] = useState<"add" | "detail" | null>(null);
     const [selectData, setSelectData] = useState(null);
 
-    const handleOpenPopup = (modeData: any, data?: any) => {
+    // Param
+    const { userID } = useParams<string>()
+
+    // Store
+    const { isPopup, setIsPopup } = bookingManagementStore()
+
+    // Handle
+    // const handleOpenPopup = (modeData: any, data?: any) => {
+    //     setMode(modeData)
+    //     // setSelectData(data || null);
+    //     // setIsOpenPopup(true);
+    //     setIsPopup()
+    // }
+
+    const handleValueOpenPopup = (modeData: any) => {
+        // handleOpenPopup(data)
         setMode(modeData)
-        setSelectData(data || null);
-        setIsOpenPopup(true);
+        setIsPopup()
     }
 
-    const handleValueOpenPopup = (data: string) => {
-        handleOpenPopup(data)
-    }
+
+    // Api
+    const { data: dataBooking, isLoading: isLoadingBooking } = useDetailBooking(String(userID));
 
     return (
         <>
@@ -42,11 +61,13 @@ export default function BookingManagement() {
                             </tr>
                         </thead>
                         <tbody>
-                            <BookingItemDetail handleValueOpenPopup={handleValueOpenPopup} />
+                            {dataBooking?.map((item: BookingItem, index: number) => {
+                                return <BookingItemDetail key={index} data={item} handleValueOpenPopup={handleValueOpenPopup} />
+                            })}
                         </tbody>
                     </table>
                 </div>
-                <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5">
+                {/* <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5">
                     <p className="text-gray-500 text-sm text-center">Hiển thị 5 người dùng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng 24 người dùng</p>
 
                     <div className="block">
@@ -73,10 +94,11 @@ export default function BookingManagement() {
                             </PaginationContent>
                         </Pagination>
                     </div>
-                </div>
+                </div> */}
             </div>
-            <Dialog open={isOpenPopup} onOpenChange={setIsOpenPopup}>
-                {mode === "detail" && <BookingPopupDetail data={selectData} />}
+            <Dialog open={isPopup} onOpenChange={setIsPopup}>
+                {/* {mode === "detail" && <BookingPopupDetail data={selectData} />} */}
+                {mode === "detail" && <BookingPopupDetail />}
             </Dialog>
         </>
     )
