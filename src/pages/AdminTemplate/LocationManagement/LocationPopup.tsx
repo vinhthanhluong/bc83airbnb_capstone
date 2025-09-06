@@ -55,6 +55,7 @@ export function LocationPopup({ mode }: LocationPopupProps) {
         }
         if (dataDetail?.id) {
             console.log('update');
+            console.log('data', data);
             mutateUpdate(data, {
                 onSuccess: () => {
                     reset({
