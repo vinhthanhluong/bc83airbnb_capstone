@@ -96,36 +96,39 @@ export default function AuthManagement() {
                     variant="outline" className="absolute top-0 md:top-1 right-0 flex items-center gap-2 text-white bg-pink-400 border-pink-400 font-semibold h-full p-2 md:px-3 rounded-md cursor-pointer hover:bg-white hover:text-pink-400 hover:shadow-[0_0_10px_#e396c1] transition-all duration-300"><UserPlus size={20} /> Thêm</Button>
             </div>
 
-            <div className="mb-6 ">
-                <form
-                    className="flex gap-2 sp400:gap-4">
-                    <Input placeholder="Tìm người dùng" className="max-w-85 h-10"  {...register("keyword")} />
-                    <div className="w-50">
-                        <Controller
-                            name="select"
-                            control={control}
-                            defaultValue="all"
-                            render={({ field }) => (
-                                <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value}
-                                >
-                                    <SelectTrigger className="w-full min-h-10">
-                                        <SelectValue placeholder="Chọn giới tính" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectItem value="all">Tất cả</SelectItem>
-                                            <SelectItem value="user">Khách hàng</SelectItem>
-                                            <SelectItem value="admin">Quản trị</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                            )}
-                        />
+            <div className="mb-6 flex gap-2 sp400:gap-4">
+                <div className="relative max-w-85 h-10 w-full">
+                    <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                        </svg>
                     </div>
-                </form>
-
+                    <Input placeholder="Tìm vị trí" className="h-10 p-4 ps-10 " {...register('keyword')} />
+                </div>
+                <div className="w-50">
+                    <Controller
+                        name="select"
+                        control={control}
+                        defaultValue="all"
+                        render={({ field }) => (
+                            <Select
+                                onValueChange={field.onChange}
+                                value={field.value}
+                            >
+                                <SelectTrigger className="w-full min-h-10">
+                                    <SelectValue placeholder="Chọn giới tính" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectItem value="all">Tất cả</SelectItem>
+                                        <SelectItem value="user">Khách hàng</SelectItem>
+                                        <SelectItem value="admin">Quản trị</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
+                </div>
             </div>
 
             <div className="border border-[#eee] rounded-lg shadow-sm w-full ">
