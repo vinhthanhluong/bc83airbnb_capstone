@@ -9,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAddLocation, useDetailLocation, useUpdateLocation } from "@/hooks/useLocationQuery"
-import type { LocationItem } from "@/interface/location.inter"
+import type { LocationItem } from "@/interface/location.interface"
 import { locationManagementStore } from "@/store/locationManagement.store"
 import { Building2, Earth, Image, MapPin, MapPinned, X } from "lucide-react"
 import { useEffect, useState } from "react";

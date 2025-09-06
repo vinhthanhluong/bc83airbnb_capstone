@@ -19,7 +19,7 @@ import PaginationCustom from "../_components/PaginationCustom";
 import { usepaginationStore } from "@/store/pagination.store";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useForm } from "react-hook-form";
-import type { LocationItem } from "@/interface/location.inter";
+import type { LocationItem } from "@/interface/location.interface";
 
 export default function LocationManagement() {
     // Store
@@ -93,7 +93,7 @@ export default function LocationManagement() {
 
             <div className="border border-[#eee] rounded-lg shadow-sm w-full">
                 <div className="relative grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-7 2xl:gap-5 p-6">
-                    {dataListLocation?.data?.map((item, index: number) => {
+                    {dataListLocation?.data?.map((item: LocationItem, index: number) => {
                         return <LocationItemDetail key={index} data={item} handleValueOpenPopup={handleValueOpenPopup} />
                     })}
                 </div>

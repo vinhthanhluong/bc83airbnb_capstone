@@ -1,5 +1,5 @@
 import { useRemoveLocation } from '@/hooks/useLocationQuery';
-import type { LocationItem } from '@/interface/location.inter';
+import type { LocationItem } from '@/interface/location.interface';
 import { locationManagementStore } from '@/store/locationManagement.store';
 import { confirmDialog } from '@/utils/dialog';
 import { SquarePen, Trash2 } from 'lucide-react'

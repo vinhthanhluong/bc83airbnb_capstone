@@ -23,12 +23,19 @@ import { Dialog } from "@/components/ui/dialog";
 import RoomPopup from "./RoomPopup";
 import RoomPopupDetail from "./RoomPopupDetail";
 import RoomItemDetail from "./RoomItemDetail";
+import { useParams } from "react-router-dom";
 
 export default function RoomManagement() {
+    // State
     const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
     const [mode, setMode] = useState<"add" | "edit" | "detail" | null>(null);
     const [popupData, setPopupData] = useState(null);
 
+    // Param
+    const { userID } = useParams();
+    console.log("🌲 ~ RoomManagement ~ userID:", userID)
+
+    // Handle
     const handleOpenPopup = (modeData: any, data?: any) => {
         setMode(modeData)
         setPopupData(data || null);

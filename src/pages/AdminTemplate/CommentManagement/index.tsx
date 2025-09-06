@@ -1,7 +1,10 @@
+import { useParams } from "react-router-dom";
 import CommentItemDetail from "./CommentItemDetail";
 
 export default function CommentManagement() {
-
+    // Param
+    let { roomID } = useParams();
+    console.log("🌲 ~ AuthManagement ~ roomID:", roomID)
     return (
         <>
             <div className="relative">

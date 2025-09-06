@@ -1,10 +1,11 @@
 import type { ListUser } from '@/interface/user.interface';
-import { Pencil, SquarePen, Trash2 } from 'lucide-react';
+import { Eye, Pencil, SquarePen, Trash2 } from 'lucide-react';
 import { format } from 'date-fns'
 import { useRemoveUser } from '@/hooks/useUserQuery';
 import { confirmDialog } from '@/utils/dialog';
 import { useState } from 'react';
 import { useUserManagementStore } from '@/store/userManagement.store';
+import { useNavigate } from 'react-router-dom';
 
 type AuthItemDetailProps = {
     data: ListUser
@@ -12,6 +13,9 @@ type AuthItemDetailProps = {
 }
 export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemDetailProps) {
     const birthday = data.birthday.replaceAll('-', '/').slice(0, 10)
+    // navigate
+    const navigate = useNavigate();
+
     // Store
     const { setIdUser } = useUserManagementStore();
 
@@ -80,6 +84,7 @@ export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemD
             </td>
             <td className="py-3 px-4">
                 <div className="flex gap-2">
+                    <Eye onClick={() => navigate(`/dashboard/booking/${data.id}`)} size={20} className='cursor-pointer text-blue-500 hover:text-blue-800' />
                     <SquarePen
                         onClick={() => {
                             handleValueOpenPopup('edit')
