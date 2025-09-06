@@ -2,9 +2,10 @@ import type { BaseApiResponse } from "@/interface/base.interface";
 import api from "./api"
 import type { LocationItem, LocationPagi } from "@/interface/location.inter";
 
-export const listLocationApi = async (pageIndex: number, pageSize: number): Promise<LocationPagi<LocationItem>> => {
+export const listLocationApi = async (pageIndex: number, pageSize: number, keyword?: string): Promise<LocationPagi<LocationItem>> => {
     try {
-        const response = await api.get<BaseApiResponse<LocationPagi<LocationItem>>>(`vi-tri/phan-trang-tim-kiem?pageIndex=${pageIndex}&pageSize=${pageSize}`);
+        const key = keyword ? `&keyword=${keyword}` : "";
+        const response = await api.get<BaseApiResponse<LocationPagi<LocationItem>>>(`vi-tri/phan-trang-tim-kiem?pageIndex=${pageIndex}&pageSize=${pageSize}${key}`);
         return response.data.content
     } catch (error) {
         console.log("🌲 ~ listLocationApi ~ error:", error)

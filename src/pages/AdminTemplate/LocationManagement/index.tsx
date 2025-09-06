@@ -17,27 +17,43 @@ import { useListLocation } from "@/hooks/useLocationQuery";
 import { locationManagementStore } from "@/store/locationManagement.store";
 import PaginationCustom from "../_components/PaginationCustom";
 import { usepaginationStore } from "@/store/pagination.store";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useForm } from "react-hook-form";
+import type { LocationItem } from "@/interface/location.inter";
 
 export default function LocationManagement() {
     // Store
     const { isPopup, setIsPopup, setIdLocation } = locationManagementStore()
     const { locationPagi, setLocationPagi } = usepaginationStore();
 
+    // State
     const [mode, setMode] = useState<"add" | "edit" | null>(null);
+    const [listUserCustom, setListUserCustom] = useState<LocationItem[] | null>(null);
 
-    const handleOpenPopup = (modeData: any, data?: any) => {
+    // handle
+    const handleOpenPopup = (modeData: any) => {
         setMode(modeData)
         setIsPopup()
     }
-
     const handleValueOpenPopup = (data: string) => {
         handleOpenPopup(data)
     }
 
+    // Form
+    const { register, watch } = useForm<{ keyword: string, select: string }>({
+        defaultValues: {
+            keyword: '',
+        }
+    })
+    const keywordSearch = watch('keyword');
+
     // API
-    const { data: dataListLocation, isLoading: isLoadingListLocation } = useListLocation(locationPagi, 21);
+    const keyworDebounce = useDebounce(keywordSearch, 500)
+    const { data: dataListLocation, isLoading: isLoadingListLocation } = useListLocation(locationPagi, 21, keyworDebounce);
 
     const totalPg = dataListLocation?.totalRow ? Math.ceil(dataListLocation?.totalRow / dataListLocation?.pageSize) : 0;
+
+
     return (
         <>
             <div className="relative">
@@ -54,8 +70,16 @@ export default function LocationManagement() {
             </div>
 
             <div className="mb-6 flex gap-2 sp400:gap-4">
-                <Input placeholder="Tìm vị trí" className="max-w-85 h-10" />
-                <Select defaultValue="user">
+                <div className="relative max-w-85 h-10 w-full">
+                    <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                        </svg>
+                    </div>
+                    <Input placeholder="Tìm vị trí" className="h-10 p-4 ps-10 " {...register('keyword')} />
+                </div>
+
+                {/* <Select defaultValue="user">
                     <SelectTrigger className="w-[180px] min-h-10">
                         <SelectValue placeholder="Loại" />
                     </SelectTrigger>
@@ -64,17 +88,17 @@ export default function LocationManagement() {
                         <SelectItem value="user">Hồ chí minh</SelectItem>
                         <SelectItem value="admin">Hà nội</SelectItem>
                     </SelectContent>
-                </Select>
+                </Select> */}
             </div>
 
             <div className="border border-[#eee] rounded-lg shadow-sm w-full">
                 <div className="relative grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-7 2xl:gap-5 p-6">
-                    {dataListLocation?.data.map((item, index: number) => {
+                    {dataListLocation?.data?.map((item, index: number) => {
                         return <LocationItemDetail key={index} data={item} handleValueOpenPopup={handleValueOpenPopup} />
                     })}
                 </div>
                 <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5 border-t border-gray-200">
-                    <p className="text-gray-500 text-sm text-center">Hiển thị 14 vị trí mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng 24 vị trí</p>
+                    <p className="text-gray-500 text-sm text-center">Hiển thị {dataListLocation?.pageSize} vị trí mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListLocation?.totalRow} vị trí</p>
 
                     {totalPg !== (1 | 0) &&
                         <div className="block">

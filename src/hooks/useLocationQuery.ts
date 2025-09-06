@@ -3,10 +3,10 @@ import { locationManagementStore } from "@/store/locationManagement.store"
 import { showDialog } from "@/utils/dialog"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-export const useListLocation = (pageIndex: number, pageSize: number, optional?: {}) => {
+export const useListLocation = (pageIndex: number, pageSize: number, keyword?: string, optional?: {}) => {
     return useQuery({
-        queryKey: ['list-location', pageIndex, pageSize],
-        queryFn: () => listLocationApi(pageIndex, pageSize),
+        queryKey: ['list-location', pageIndex, pageSize, keyword],
+        queryFn: () => listLocationApi(pageIndex, pageSize, keyword),
         ...optional
     })
 }
