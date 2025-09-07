@@ -1,6 +1,8 @@
 import { CalendarDays, ChevronDownIcon, CircleUser, LoaderCircle, Mail, Phone, SquareAsterisk, User, UserRoundPen, VenusAndMars } from "lucide-react"
-import { useForm, Controller } from "react-hook-form"
+import { useForm, Controller, SubmitHandler } from "react-hook-form"
 import { useEffect, useState } from "react";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button"
 import {
@@ -34,6 +36,21 @@ interface AuthPopupProps {
     mode: "add" | "edit",
 }
 
+const schema = z.object({
+    id: z.number(),
+    name: z.string().nonempty("Vui lòng nhập họ tên"),
+    password: z.string().nonempty("Vui lòng nhập mật khẩu"),
+    phone: z.string().regex(/^[0-9]+$/, "Vui lòng nhập số"),
+    email: z.string().regex(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, "Vui lòng nhập đúng định dạng @"),
+    gender: z.boolean().optional().refine((val) => val !== undefined, {
+        message: "Vui lòng chọn giới tính",
+    }),
+    birthday: z.string().nonempty("Vui lòng nhập ngày sinh"),
+    role: z.string().nonempty("Vui lòng chọn cấp bậc"),
+});
+
+type AuthPopupForms = z.infer<typeof schema>;
+
 export default function AuthPopup({ mode }: AuthPopupProps) {
     const { idUser } = useUserManagementStore();
 
@@ -45,7 +62,7 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
         control,
         reset,
         formState: { errors },
-    } = useForm<UserPostResponse>({
+    } = useForm<AuthPopupForms>({
         defaultValues: {
             id: 0,
             name: '',
@@ -53,10 +70,10 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
             password: '',
             phone: '',
             birthday: '',
-            // avatar: '',
-            gender: true,
+            gender: undefined,
             role: '',
-        }
+        },
+        resolver: zodResolver(schema)
     })
 
     // API
@@ -89,7 +106,7 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
 
     }, [idUser, dataDetailUser, reset]);
 
-    const onSubmit = (data: UserPostResponse) => {
+    const onSubmit: SubmitHandler<AuthPopupForms> = (data) => {
         if (dataDetailUser?.id) {
             mutateUpdate({
                 id: dataDetailUser.id,
@@ -99,12 +116,13 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
             mutateAdd(data, {
                 onSuccess: () => {
                     reset({
+                        id: 0,
                         name: '',
                         email: '',
                         password: '',
                         phone: '',
                         birthday: '',
-                        gender: true,
+                        gender: undefined,
                         role: '',
                     })
                 }
@@ -126,14 +144,17 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
                         <div className="grid gap-2">
                             <Label htmlFor="email"><Mail size={18} className="text-red-300" />Email</Label>
                             <Input className="h-10" id="email" placeholder="Nhập email @gmail.com" {...register("email")} />
+                            {errors.email?.message && <p className="text-red-300 text-xs">{errors.email?.message}</p>}
                         </div>
                         {mode === "add" && <div className="grid gap-2">
                             <Label htmlFor="password"><SquareAsterisk size={18} className="text-blue-300" />Mật khẩu</Label>
                             <Input className="h-10" id="password" placeholder="Nhập mật khẩu" {...register("password")} />
+                            {errors.password?.message && <p className="text-red-300 text-xs">{errors.password?.message}</p>}
                         </div>}
                         <div className="grid gap-2">
                             <Label htmlFor="name"><User size={20} className="text-yellow-400" />Họ tên</Label>
                             <Input className="h-10" id="name" placeholder="Nhập họ tên" {...register("name")} />
+                            {errors.name?.message && <p className="text-red-300 text-xs">{errors.name.message}</p>}
                         </div>
                         {/* <div className="grid gap-4 row-span-3">
                             <div className="block space-y-2">
@@ -166,6 +187,7 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
                         <div className="grid gap-2">
                             <Label htmlFor="phone"><Phone size={18} className="text-green-400" />Số điện thoại</Label>
                             <Input className="h-10" id="phone" placeholder="Nhập số điện thoại" {...register("phone")} />
+                            {errors.phone?.message && <p className="text-red-300 text-xs">{errors.phone?.message}</p>}
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="gender"><VenusAndMars size={19} className="text-pink-300" />Giới tính</Label>
@@ -175,7 +197,8 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
                                 render={({ field }) => (
                                     <Select
                                         onValueChange={(val) => field.onChange(val === "nam")}
-                                        value={field.value ? "nam" : "nu"}
+                                        value={field.value === undefined ? undefined
+                                            : field.value ? "nam" : "nu"}
                                     >
                                         <SelectTrigger className="w-full min-h-10">
                                             <SelectValue placeholder="Chọn giới tính" />
@@ -189,6 +212,7 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
                                     </Select>
                                 )}
                             />
+                            {errors.gender?.message && <p className="text-red-300 text-xs">{errors.gender?.message}</p>}
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="birthday" className="px-1">
@@ -224,6 +248,7 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
                                     </Popover>
                                 )}
                             />
+                            {errors.birthday?.message && <p className="text-red-300 text-xs">{errors.birthday?.message}</p>}
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="role"><CircleUser size={20} className="text-orange-300" />Cấp bậc</Label>
@@ -245,6 +270,7 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
                                     </Select>
                                 )}
                             />
+                            {errors.role?.message && <p className="text-red-300 text-xs">{errors.role?.message}</p>}
                         </div>
                     </div>
                 </div>
