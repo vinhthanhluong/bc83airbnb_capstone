@@ -30,6 +30,9 @@ export default function BookingItemDetail({ data, handleValueOpenPopup }: Bookin
                 <p className="">{data?.ngayDi && format(new Date(data?.ngayDi), 'dd/MM/yyy')}</p>
             </td>
             <td className="py-3 px-4">
+                <p className="">{data?.maPhong}</p>
+            </td>
+            <td className="py-3 px-4">
                 <p className="">{data?.soLuongKhach}</p>
             </td>
             <td className="py-3 px-4">
