@@ -1,0 +1,26 @@
+import { Store } from 'lucide-react'
+import { create } from 'zustand'
+
+type paginationStore = {
+    pagi: number,
+    setPagi: (numPagi: number) => void,
+
+    userPagi: number,
+    setUserPagi: (numPagi: number) => void,
+
+    locationPagi: number,
+    setLocationPagi: (numPagi: number) => void
+}
+
+export const usepaginationStore = create<paginationStore>((set) => ({
+    pagi: 1,
+    setPagi: (numPagi) => set({ pagi: numPagi }),
+
+    userPagi: 1,
+    setUserPagi: (numPagi) => set({ userPagi: numPagi }),
+
+    locationPagi: 1,
+    setLocationPagi: (numPagi) => set({ locationPagi: numPagi }),
+}))
+
+

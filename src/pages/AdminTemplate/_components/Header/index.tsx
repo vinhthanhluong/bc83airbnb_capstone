@@ -4,12 +4,15 @@ import { useEffect, useRef, useState } from 'react';
 import { useDashboardStore } from '@/store/dashboard.store';
 
 export default function Header() {
+  // Store
   const { setIsMenu } = useDashboardStore();
+  const { user, clearUser } = useAuthStore();
+  // State
   const [isActiveHamburger, setIsActiveHamburger] = useState<boolean>(false);
   const [isActiveAvatar, setIsActiveAvatar] = useState<boolean>(false);
   const avatarRef = useRef<HTMLDivElement>(null);
 
-  const { clearUser } = useAuthStore();
+  // Handle
   const navigate = useNavigate()
   const handleLogout = () => {
     clearUser();
@@ -52,11 +55,11 @@ export default function Header() {
         {/* Avatar */}
         <div className='relative' ref={avatarRef}>
           <div className='flex items-center gap-3' onClick={() => setIsActiveAvatar(!isActiveAvatar)}>
-            {/* <img className="size-10 rounded-full cursor-pointer" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="User dropdown" /> */}
-            <div className='cursor-pointer size-10 flex items-center justify-center bg-gray-400 rounded-full'>
-              <p className='text-lg text-white font-medium'>Ad</p>
+            <div className='cursor-pointer size-10 flex items-center justify-center bg-gradient-to-r from-sky-300 to-blue-300 rounded-full'>
+              {user?.user.avatar ? (<img className="size-10 rounded-full cursor-pointer" src={user?.user.avatar} alt="User dropdown" />) :
+                (<p className='text-lg text-white font-medium'>{user?.user.role === "ADMIN" ? 'Ad' : 'Us'}</p>)}
             </div>
-            <div className='font-medium hidden md:block'>Bonnie Green</div>
+            <div className='font-medium hidden md:block'>{user?.user.name}</div>
           </div>
           {isActiveAvatar && <div className="absolute top-[120%] overflow-hidden right-0 z-10 bg-white divide-y divide-gray-200 rounded-md shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600">
             <ul className="text-sm text-gray-700 dark:text-gray-200">
