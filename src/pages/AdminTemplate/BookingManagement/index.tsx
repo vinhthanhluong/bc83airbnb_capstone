@@ -35,15 +35,11 @@ export default function BookingManagement() {
     // Handle
     const handleOpenPopup = (modeData: any) => {
         setMode(modeData)
-        // setSelectData(data || null);
-        // setIsOpenPopup(true);
         setIsPopup()
     }
 
     const handleValueOpenPopup = (modeData: any) => {
-        // handleOpenPopup(data)
-        setMode(modeData)
-        setIsPopup()
+        handleOpenPopup(modeData)
     }
 
     // Api
@@ -56,7 +52,6 @@ export default function BookingManagement() {
                 <Button
                     onClick={() => {
                         handleOpenPopup('add')
-                        // handleOpenPopup('add')
                         // setIdUser(0)
                     }}
                     variant="outline" className="absolute top-0 md:top-1 right-0 flex items-center gap-2 text-white bg-pink-400 border-pink-400 font-semibold h-full p-2 md:px-3 rounded-md cursor-pointer hover:bg-white hover:text-pink-400 hover:shadow-[0_0_10px_#e396c1] transition-all duration-300">
@@ -82,37 +77,8 @@ export default function BookingManagement() {
                         </tbody>
                     </table>
                 </div>
-                {/* <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5">
-                    <p className="text-gray-500 text-sm text-center">Hiển thị 5 người dùng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng 24 người dùng</p>
-
-                    <div className="block">
-                        <Pagination>
-                            <PaginationContent>
-                                <PaginationItem>
-                                    <PaginationPrevious />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink>1</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink>2</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink>10</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationNext />
-                                </PaginationItem>
-                            </PaginationContent>
-                        </Pagination>
-                    </div>
-                </div> */}
             </div>
             <Dialog open={isPopup} onOpenChange={setIsPopup}>
-                {/* {mode === "detail" && <BookingPopupDetail data={selectData} />} */}
                 {mode === "add" && <BookingPopup mode={mode} />}
                 {mode === "detail" && <BookingPopupDetail />}
             </Dialog>

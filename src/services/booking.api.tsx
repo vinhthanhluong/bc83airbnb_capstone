@@ -13,6 +13,16 @@ export const detailBookingApi = async (id: string): Promise<BookingItem[]> => {
     }
 }
 
+export const addBookingApi = async (data: any): Promise<BookingItem> => {
+    try {
+        const response = await api.post<BaseApiResponse<BookingItem>>(`dat-phong/`, data)
+        return response.data.content;
+    } catch (error) {
+        console.log("🌲 ~ addBookingApi ~ error:", error)
+        throw error
+    }
+}
+
 export const removeBookingApi = async (id: string) => {
     try {
         await api.delete<BaseApiResponse<BookingItem[]>>(`dat-phong/${id}`)
