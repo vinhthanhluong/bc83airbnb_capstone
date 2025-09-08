@@ -1,5 +1,5 @@
 import { CalendarDays, ChevronDownIcon, CircleUser, LoaderCircle, Mail, Phone, SquareAsterisk, User, UserRoundPen, VenusAndMars } from "lucide-react"
-import { useForm, Controller, SubmitHandler } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 import { useEffect, useState } from "react";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,20 +39,27 @@ interface AuthPopupProps {
 const schema = z.object({
     id: z.number(),
     name: z.string().nonempty("Vui lòng nhập họ tên"),
+    email: z.string().regex(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, "Vui lòng nhập đúng định dạng @"),
     password: z.string().nonempty("Vui lòng nhập mật khẩu"),
     phone: z.string().regex(/^[0-9]+$/, "Vui lòng nhập số"),
-    email: z.string().regex(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, "Vui lòng nhập đúng định dạng @"),
+    birthday: z.string().nonempty("Vui lòng nhập ngày sinh"),
     gender: z.boolean().optional().refine((val) => val !== undefined, {
         message: "Vui lòng chọn giới tính",
     }),
-    birthday: z.string().nonempty("Vui lòng nhập ngày sinh"),
     role: z.string().nonempty("Vui lòng chọn cấp bậc"),
 });
+
+
+const schemaAdd = schema;
+const schemaEdit = schema.extend({
+    password: z.string().optional(),
+})
 
 type AuthPopupForms = z.infer<typeof schema>;
 
 export default function AuthPopup({ mode }: AuthPopupProps) {
     const { idUser } = useUserManagementStore();
+    const resolverSchema = mode === "add" ? schemaAdd : schemaEdit;
 
     const [openDate, setOpenDate] = useState(false)
     const { register,
@@ -73,23 +80,13 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
             gender: undefined,
             role: '',
         },
-        resolver: zodResolver(schema)
+        resolver: zodResolver(resolverSchema as typeof schema)
     })
 
     // API
     const { data: dataDetailUser, isLoading: isLoadingDetailUser } = useDetailUser(idUser);
     const { mutate: mutateAdd, isPending: isPendingAdd } = useAddUser();
     const { mutate: mutateUpdate, isPending: isPendingUpdate } = useUpdateUser();
-
-    // const avatar = watch("avatar")
-    // const previewImage = (file: File | string | undefined) => {
-    //     if (!file) return "";
-    //     if (typeof file == "string") {
-    //         return file;
-    //     }
-    //     const url = URL.createObjectURL(file)
-    //     return url
-    // }
 
     // GetUserId
     useEffect(() => {
@@ -106,14 +103,14 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
 
     }, [idUser, dataDetailUser, reset]);
 
-    const onSubmit: SubmitHandler<AuthPopupForms> = (data) => {
+    const onSubmit = (data: AuthPopupForms) => {
         if (dataDetailUser?.id) {
             mutateUpdate({
                 id: dataDetailUser.id,
-                data: data,
+                data: data as UserPostResponse,
             });
         } else {
-            mutateAdd(data, {
+            mutateAdd(data as UserPostResponse, {
                 onSuccess: () => {
                     reset({
                         id: 0,
