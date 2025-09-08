@@ -3,6 +3,7 @@ import { useForm, Controller } from "react-hook-form"
 import { useEffect, useState } from "react";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from 'date-fns'
 
 import { Button } from "@/components/ui/button"
 import {
@@ -237,7 +238,10 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
                                                 captionLayout="dropdown"
                                                 selected={field.value ? new Date(field.value) : undefined}
                                                 onSelect={(date) => {
-                                                    field.onChange(date?.toISOString())
+                                                    if (date) {
+                                                        const formatted = format(new Date(date), "yyyy-MM-dd")
+                                                        field.onChange(formatted)
+                                                    }
                                                     setOpenDate(false)
                                                 }}
                                             />
