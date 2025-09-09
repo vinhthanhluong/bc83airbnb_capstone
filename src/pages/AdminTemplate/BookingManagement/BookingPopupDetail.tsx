@@ -13,9 +13,9 @@ import { Anvil, Bath, Bed, ChefHat, DollarSign, MonitorStop, SquareParking, SunS
 
 export default function BookingPopupDetail() {
     // Store
-    const { idBooking } = bookingManagementStore();
+    const { idBookingRoom } = bookingManagementStore();
 
-    const { data: dataRoomDetail, isLoading: isLoadingRoomBooking } = useDetailRoom(String(idBooking))
+    const { data: dataRoomDetail, isLoading: isLoadingRoomBooking } = useDetailRoom(String(idBookingRoom))
 
     return (
         <DialogContent className="sm:w-[calc(100%-2rem)] sm:max-w-[1000px] p-0 gap-0">

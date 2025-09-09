@@ -13,7 +13,7 @@ import { Dialog } from "@/components/ui/dialog";
 import BookingItemDetail from "./BookingItemDetail";
 import BookingPopupDetail from "./BookingPopupDetail";
 import { bookingManagementStore } from "@/store/bookingManagement.store";
-import { useDetailBooking } from "@/hooks/useBookingQuery";
+import { useDetailUserBooking } from "@/hooks/useBookingQuery";
 import { useParams } from "react-router-dom";
 import type { BookingItem } from "@/interface/booking.interface";
 import { Button } from "@/components/ui/button";
@@ -23,27 +23,27 @@ import { BookingPopup } from "./BookingPopup";
 export default function BookingManagement() {
     // State
     // const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
-    const [mode, setMode] = useState<"add" | "detail" | null>(null);
+    const [mode, setMode] = useState<"add" | "edit" | "detail" | null | string>(null);
     const [selectData, setSelectData] = useState(null);
 
     // Param
     const { userID } = useParams<string>()
 
     // Store
-    const { isPopup, setIsPopup } = bookingManagementStore()
+    const { isPopup, setIsPopup , setIdBooking } = bookingManagementStore()
 
     // Handle
-    const handleOpenPopup = (modeData: any) => {
+    const handleOpenPopup = (modeData: string) => {
         setMode(modeData)
         setIsPopup()
     }
 
-    const handleValueOpenPopup = (modeData: any) => {
+    const handleValueOpenPopup = (modeData: string) => {
         handleOpenPopup(modeData)
     }
 
     // Api
-    const { data: dataBooking, isLoading: isLoadingBooking } = useDetailBooking(String(userID));
+    const { data: dataBooking, isLoading: isLoadingBooking } = useDetailUserBooking(String(userID));
 
     return (
         <>
@@ -52,7 +52,7 @@ export default function BookingManagement() {
                 <Button
                     onClick={() => {
                         handleOpenPopup('add')
-                        // setIdUser(0)
+                        setIdBooking(0)
                     }}
                     variant="outline" className="absolute top-0 md:top-1 right-0 flex items-center gap-2 text-white bg-pink-400 border-pink-400 font-semibold h-full p-2 md:px-3 rounded-md cursor-pointer hover:bg-white hover:text-pink-400 hover:shadow-[0_0_10px_#e396c1] transition-all duration-300">
                     <Plus size={20} /> Thêm
@@ -80,6 +80,7 @@ export default function BookingManagement() {
             </div>
             <Dialog open={isPopup} onOpenChange={setIsPopup}>
                 {mode === "add" && <BookingPopup mode={mode} />}
+                {mode === "edit" && <BookingPopup mode={mode} />}
                 {mode === "detail" && <BookingPopupDetail />}
             </Dialog>
         </>

@@ -11,7 +11,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
@@ -24,26 +23,24 @@ import {
 } from "@/components/ui/popover"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useAddLocation, useDetailLocation, useListLocation, useUpdateLocation } from "@/hooks/useLocationQuery"
-import type { LocationItem, LocationPagi } from "@/interface/location.interface"
-import { locationManagementStore } from "@/store/locationManagement.store"
-import { Building2, Earth, Image, MapPin, MapPinned, X } from "lucide-react"
+import { useListLocation } from "@/hooks/useLocationQuery"
+import { MapPin } from "lucide-react"
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form"
 import type { BookingItem } from "@/interface/booking.interface"
 import { format } from 'date-fns'
-import { file } from "zod"
 import { useLocationOfRoom } from "@/hooks/useRoomQuery"
-import type { AuthApiResponse, CurrentUser } from "@/interface/auth.interface"
-import { useAddBooking } from "@/hooks/useBookingQuery"
+import { useAddBooking, useDetailBooking, useUpdateBooking } from "@/hooks/useBookingQuery"
 import { useParams } from "react-router-dom"
+import { bookingManagementStore } from "@/store/bookingManagement.store"
 
 interface BookingPopupProps {
   mode: "add" | "edit",
 }
 
 export function BookingPopup({ mode }: BookingPopupProps) {
-  // Store
+  // 
+  const { idBooking } = bookingManagementStore();
 
   // Param
   const { userID } = useParams<string>()
@@ -59,12 +56,13 @@ export function BookingPopup({ mode }: BookingPopupProps) {
   // API
   const { data: dataLocation, isLoading: isLoadingLocation } = useListLocation(1, 999);
   const { data: dataRoom, isLoading: isLoadingRoom } = useLocationOfRoom(locationValue);
+  const { data: dataDetailBook, isLoading: isLoadingDetailBook } = useDetailBooking(Number(idBooking));
   const { mutate: mutateAdd, isPending: isPendingAdd } = useAddBooking()
+  const { mutate: mutateUpdate, isPending: isPendingUpdate } = useUpdateBooking()
 
   // Form
-  const { register: registerBooking, handleSubmit: handleSubmitBooking, control: controlBooking } = useForm<BookingItem>({
+  const { register: registerBooking, handleSubmit: handleSubmitBooking, control: controlBooking, reset: resetBooking, setValue } = useForm<BookingItem>({
     defaultValues: {
-      id: 0,
       maPhong: 0,
       ngayDen: undefined,
       ngayDi: undefined,
@@ -73,8 +71,31 @@ export function BookingPopup({ mode }: BookingPopupProps) {
     }
   })
 
+  useEffect(() => {
+    resetBooking({
+      id: dataDetailBook?.id,
+      maPhong: dataDetailBook?.maPhong,
+      ngayDen: dataDetailBook?.ngayDen,
+      ngayDi: dataDetailBook?.ngayDi,
+      soLuongKhach: dataDetailBook?.soLuongKhach,
+      maNguoiDung: Number(userID),
+    })
+  }, [idBooking, dataDetailBook, resetBooking]);
+
   const onSubmit = (data: BookingItem) => {
-    mutateAdd(data)
+    if (data.id) {
+      mutateUpdate({
+        id: data.id,
+        data: data
+      })
+    } else {
+      mutateAdd(data, {
+        onSuccess: () => {
+          resetBooking()
+        }
+      })
+
+    }
   }
 
   return (

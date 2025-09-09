@@ -11,7 +11,7 @@ type BookingItemDetailProps = {
 
 export default function BookingItemDetail({ data, handleValueOpenPopup }: BookingItemDetailProps) {
     // Store
-    const { idBooking, setIdBooking } = bookingManagementStore();
+    const { setIdBookingRoom, setIdBooking } = bookingManagementStore();
 
     // Api
     const { mutate: mutateRemove, isPending: isPendingRemove } = useRemoveBooking()
@@ -40,14 +40,14 @@ export default function BookingItemDetail({ data, handleValueOpenPopup }: Bookin
                     <Eye
                         onClick={() => {
                             handleValueOpenPopup('detail');
-                            setIdBooking(data?.maPhong);
+                            setIdBookingRoom(data?.maPhong);
                         }}
                         className="cursor-pointer text-blue-500 hover:text-blue-800" size={20} />
                     <SquarePen
-                        // onClick={() => {
-                        //     handleValueOpenPopup('edit')
-                        //     setIdUser(data.id)
-                        // }}
+                        onClick={() => {
+                            handleValueOpenPopup('edit')
+                            setIdBooking(data.id)
+                        }}
                         className="cursor-pointer text-yellow-500 hover:text-yellow-800" size={20} />
                     <Trash2
                         onClick={() => handleDelete(String(data?.id))}
