@@ -42,9 +42,9 @@ export const removeLocationApi = async (id: number) => {
     }
 }
 
-export const updateLocationApi = async (data: any) => {
+export const updateLocationApi = async (id: number, data: any) => {
     try {
-        const response = await api.put<BaseApiResponse<LocationItem>>(`vi-tri`, data);
+        const response = await api.put<BaseApiResponse<LocationItem>>(`vi-tri/${id}`, data);
         return response.data.content
     } catch (error) {
         console.log("🌲 ~ addLocationApi ~ error:", error)

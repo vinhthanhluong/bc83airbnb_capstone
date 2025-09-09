@@ -54,7 +54,6 @@ export default function AuthManagement() {
     // API
     const debounceKeyword = useDebounce(keywordSearch, 500);
     const { data: dataListUser, isLoading: isLoadingListUser } = useListUserPagi(userPagi, 10, debounceKeyword);
-    console.log("🌲 ~ AuthManagement ~ dataListUser:", dataListUser)
     // const { data: dataSearchUser, isLoading: isLoadingSearchUser } = useSearchUser(debounceKeyword);
 
     // --- Effect: Type,Search user ---

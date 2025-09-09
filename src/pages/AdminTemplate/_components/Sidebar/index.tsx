@@ -8,7 +8,7 @@ const MENU_DASHBOARD = [
     { id: 1, icon: <User />, text: 'Quản lí người dùng', link: 'auth-management' },
     { id: 2, icon: <MapPinned />, text: 'Quản lí vị trí', link: 'location-management' },
     { id: 3, icon: <Store />, text: 'Quản lí tin phòng', link: 'room-management' },
-    { id: 4, icon: <HousePlus />, text: 'Quản lí đặt phòng', link: 'booking-management' },
+    // { id: 4, icon: <HousePlus />, text: 'Quản lí đặt phòng', link: 'booking' },
     { id: 5, icon: <MessageSquareText />, text: 'Quản lí bình luận', link: 'comment-management' }
 ]
 
@@ -38,7 +38,13 @@ export default function Sidebar() {
 
     useEffect(() => {
         const local = location.pathname.split('/')[2]
-        const isLocal = MENU_DASHBOARD.find(item => item.link === local);
+        const isLocal = MENU_DASHBOARD.find(item => {
+            if (local === 'booking') {
+                return item.link === 'auth-management'
+            } else {
+                return item.link === local
+            }
+        });
         setIndexActive(isLocal ? isLocal?.id : 0)
     }, [location]);
 
