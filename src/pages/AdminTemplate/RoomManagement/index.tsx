@@ -23,7 +23,10 @@ import { Dialog } from "@/components/ui/dialog";
 import RoomPopup from "./RoomPopup";
 import RoomPopupDetail from "./RoomPopupDetail";
 import RoomItemDetail from "./RoomItemDetail";
-import { useParams } from "react-router-dom";
+import { useListRoom } from "@/hooks/useRoomQuery";
+import type { RoomItem } from "@/interface/room.interface";
+import PaginationCustom from "../_components/PaginationCustom";
+import { usePaginationStore } from "@/store/pagination.store";
 
 export default function RoomManagement() {
     // State
@@ -31,9 +34,8 @@ export default function RoomManagement() {
     const [mode, setMode] = useState<"add" | "edit" | "detail" | null>(null);
     const [popupData, setPopupData] = useState(null);
 
-    // Param
-    const { userID } = useParams();
-    console.log("🌲 ~ RoomManagement ~ userID:", userID)
+    // Store
+    const { roomPagi, setRoomPagi } = usePaginationStore();
 
     // Handle
     const handleOpenPopup = (modeData: any, data?: any) => {
@@ -45,6 +47,10 @@ export default function RoomManagement() {
     const handleValueOpenPopup = (data: string) => {
         handleOpenPopup(data);
     }
+
+    // Api
+    const { data: dataListRoom, isLoading: isLoadingListRoom } = useListRoom(roomPagi, 10);
+
 
     return (
         <>
@@ -74,34 +80,15 @@ export default function RoomManagement() {
 
             <div className="border border-[#eee] rounded-lg shadow-sm w-full">
                 <div className="relative grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6 2xl:gap-5 p-6">
-                    <RoomItemDetail handleValueOpenPopup={handleValueOpenPopup} />
+                    {dataListRoom?.data?.map((item: RoomItem, index: number) => (
+                        <RoomItemDetail key={index} data={item} handleValueOpenPopup={handleValueOpenPopup} />
+                    ))}
                 </div>
                 <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5 border-t border-gray-200">
-                    <p className="text-gray-500 text-sm text-center">Hiển thị 14 phòng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng 24 phòng</p>
+                    <p className="text-gray-500 text-sm text-center">Hiển thị {dataListRoom?.pageSize} phòng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListRoom?.totalRow} phòng</p>
 
                     <div className="block">
-                        <Pagination>
-                            <PaginationContent>
-                                <PaginationItem>
-                                    <PaginationPrevious />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink>1</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink>2</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink>10</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationNext />
-                                </PaginationItem>
-                            </PaginationContent>
-                        </Pagination>
+                        <PaginationCustom setPagi={setRoomPagi} pageIndex={dataListRoom?.pageIndex} pageSize={dataListRoom?.pageSize} totalRow={dataListRoom?.totalRow} />
                     </div>
                 </div>
             </div>

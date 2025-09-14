@@ -32,7 +32,7 @@ import { format } from 'date-fns'
 import { useLocationOfRoom } from "@/hooks/useRoomQuery"
 import { useAddBooking, useDetailBooking, useUpdateBooking } from "@/hooks/useBookingQuery"
 import { useParams } from "react-router-dom"
-import { bookingManagementStore } from "@/store/bookingManagement.store"
+import { useBookingManagementStore } from "@/store/bookingManagement.store"
 
 interface BookingPopupProps {
   mode: "add" | "edit",
@@ -40,7 +40,7 @@ interface BookingPopupProps {
 
 export function BookingPopup({ mode }: BookingPopupProps) {
   // 
-  const { idBooking } = bookingManagementStore();
+  const { idBooking } = useBookingManagementStore();
 
   // Param
   const { userID } = useParams<string>()

@@ -12,7 +12,7 @@ import { Dialog } from "@/components/ui/dialog";
 
 import BookingItemDetail from "./BookingItemDetail";
 import BookingPopupDetail from "./BookingPopupDetail";
-import { bookingManagementStore } from "@/store/bookingManagement.store";
+import { useBookingManagementStore } from "@/store/bookingManagement.store";
 import { useDetailUserBooking } from "@/hooks/useBookingQuery";
 import { useParams } from "react-router-dom";
 import type { BookingItem } from "@/interface/booking.interface";
@@ -24,13 +24,12 @@ export default function BookingManagement() {
     // State
     // const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
     const [mode, setMode] = useState<"add" | "edit" | "detail" | null | string>(null);
-    const [selectData, setSelectData] = useState(null);
 
     // Param
     const { userID } = useParams<string>()
 
     // Store
-    const { isPopup, setIsPopup , setIdBooking } = bookingManagementStore()
+    const { isPopup, setIsPopup , setIdBooking } = useBookingManagementStore()
 
     // Handle
     const handleOpenPopup = (modeData: string) => {

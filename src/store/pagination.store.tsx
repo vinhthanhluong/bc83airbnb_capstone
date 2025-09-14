@@ -9,10 +9,13 @@ type paginationStore = {
     setUserPagi: (numPagi: number) => void,
 
     locationPagi: number,
-    setLocationPagi: (numPagi: number) => void
+    setLocationPagi: (numPagi: number) => void,
+
+    roomPagi: number,
+    setRoomPagi: (numPagi: number) => void
 }
 
-export const usepaginationStore = create<paginationStore>((set) => ({
+export const usePaginationStore = create<paginationStore>((set) => ({
     pagi: 1,
     setPagi: (numPagi) => set({ pagi: numPagi }),
 
@@ -21,6 +24,9 @@ export const usepaginationStore = create<paginationStore>((set) => ({
 
     locationPagi: 1,
     setLocationPagi: (numPagi) => set({ locationPagi: numPagi }),
+
+    roomPagi: 1,
+    setRoomPagi: (numPagi) => set({ roomPagi: numPagi }),
 }))
 
 
