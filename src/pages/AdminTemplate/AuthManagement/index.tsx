@@ -19,7 +19,7 @@ import { useListUserPagi, useSearchUser } from "@/hooks/useUserQuery";
 import PaginationCustom from "../_components/PaginationCustom";
 import Loading from "@/components/layouts/Loading";
 import { useUserManagementStore } from "@/store/userManagement.store";
-import { usepaginationStore } from "@/store/pagination.store";
+import { usePaginationStore } from "@/store/pagination.store";
 import AuthPopupImg from "./AuthPopupImg";
 import { SelectGroup } from "@radix-ui/react-select";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -27,7 +27,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 export default function AuthManagement() {
     // Store
     const { isPopup, setIsPopup, setIdUser } = useUserManagementStore();
-    const { userPagi, setUserPagi } = usepaginationStore();
+    const { userPagi, setUserPagi } = usePaginationStore();
 
     // State
     const [mode, setMode] = useState<"add" | "edit" | "history" | "detail" | "editImg" | null>(null);

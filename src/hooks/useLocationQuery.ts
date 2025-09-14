@@ -73,12 +73,12 @@ export const useRemoveLocation = (optional?: {}) => {
     })
 }
 
-export const useUpdateLocation = (optional?: {}) => {
+export const useUpdateLocation = (id: number, data: any, optional?: {}) => {
     const queryClient = useQueryClient();
     const { setIsPopup } = locationManagementStore();
 
     return useMutation({
-        mutationFn: updateLocationApi,
+        mutationFn: ({ id, data }: any) => updateLocationApi(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['list-location'] })
             setIsPopup()

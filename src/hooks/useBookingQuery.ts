@@ -1,7 +1,7 @@
 import type { BaseApiResponse } from "@/interface/base.interface"
 import type { BookingItem } from "@/interface/booking.interface"
 import { addBookingApi, detailBookingApi, detailUserBookingApi, removeBookingApi, updateBookingApi } from "@/services/booking.api"
-import { bookingManagementStore } from "@/store/bookingManagement.store"
+import { useBookingManagementStore } from "@/store/bookingManagement.store"
 import { showDialog } from "@/utils/dialog"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
@@ -25,7 +25,7 @@ export const useDetailBooking = (id: number, optional?: {}) => {
 
 export const useAddBooking = (optional?: {}) => {
     const queryClient = useQueryClient();
-    const { setIsPopup } = bookingManagementStore();
+    const { setIsPopup } = useBookingManagementStore();
     return useMutation({
         mutationFn: addBookingApi,
         onSuccess: () => {
@@ -50,7 +50,7 @@ export const useAddBooking = (optional?: {}) => {
 
 export const useRemoveBooking = (optional?: {}) => {
     const queryClient = useQueryClient();
-    const { setIsPopup } = bookingManagementStore();
+    const { setIsPopup } = useBookingManagementStore();
     return useMutation({
         mutationFn: removeBookingApi,
         onSuccess: () => {
@@ -74,7 +74,7 @@ export const useRemoveBooking = (optional?: {}) => {
 
 export const useUpdateBooking = (optional?: {}) => {
     const queryClient = useQueryClient();
-    const { setIsPopup } = bookingManagementStore();
+    const { setIsPopup } = useBookingManagementStore();
     return useMutation<BookingItem, any, { id: number, data: BookingItem }>({
         mutationFn: ({ id, data }) => updateBookingApi(id, data),
         onSuccess: () => {

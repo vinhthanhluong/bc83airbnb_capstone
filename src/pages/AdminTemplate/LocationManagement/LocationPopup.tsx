@@ -26,7 +26,7 @@ export function LocationPopup({ mode }: LocationPopupProps) {
     // API
     const { data: dataDetail, isLoading: isLoadingDetail } = useDetailLocation(idLocation);
     const { mutate: mutateAdd, isPending: isPendingAdd } = useAddLocation();
-    const { mutate: mutateUpdate, isPending: isPendingUpdate } = useUpdateLocation();
+    const { mutate: mutateUpdate, isPending: isPendingUpdate } = useUpdateLocation(1,{});
 
     const { register, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm<LocationItem>({
         defaultValues: {

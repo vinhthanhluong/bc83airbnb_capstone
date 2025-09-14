@@ -11,7 +11,7 @@ type bookingManagementStoreProps = {
     setIdBooking: (numId: number | undefined) => void,
 }
 
-export const bookingManagementStore = create<bookingManagementStoreProps>((set) => ({
+export const useBookingManagementStore = create<bookingManagementStoreProps>((set) => ({
     isPopup: false,
     setIsPopup: () => set((state) => ({ isPopup: !state.isPopup })),
 

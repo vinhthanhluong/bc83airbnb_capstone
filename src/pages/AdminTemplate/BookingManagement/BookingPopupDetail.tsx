@@ -4,7 +4,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { useDetailRoom } from "@/hooks/useRoomQuery"
-import { bookingManagementStore } from "@/store/bookingManagement.store"
+import { useBookingManagementStore } from "@/store/bookingManagement.store"
 import { Anvil, Bath, Bed, ChefHat, DollarSign, MonitorStop, SquareParking, SunSnow, Users, Warehouse, WashingMachine, WavesLadder, Wifi } from "lucide-react"
 
 // interface BookingPopupDetailProps {
@@ -13,7 +13,7 @@ import { Anvil, Bath, Bed, ChefHat, DollarSign, MonitorStop, SquareParking, SunS
 
 export default function BookingPopupDetail() {
     // Store
-    const { idBookingRoom } = bookingManagementStore();
+    const { idBookingRoom } = useBookingManagementStore();
 
     const { data: dataRoomDetail, isLoading: isLoadingRoomBooking } = useDetailRoom(String(idBookingRoom))
 

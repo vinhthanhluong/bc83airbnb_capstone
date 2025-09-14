@@ -7,7 +7,7 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import { usepaginationStore } from "@/store/pagination.store";
+import { usePaginationStore } from "@/store/pagination.store";
 
 type PaginationCustomProps = {
     setPagi: (numPagi: number) => void;
@@ -17,7 +17,7 @@ type PaginationCustomProps = {
 };
 
 export default function PaginationCustom({ setPagi, pageIndex, pageSize, totalRow }: PaginationCustomProps) {
-    // const { setPagi } = usepaginationStore()
+    // const { setPagi } = usePaginationStore()
     const prevPagi = (pageIndex ?? 0) - 1;
     const nextPagi = (pageIndex ?? 0) + 1;
     const totalPagi = (totalRow && pageSize) ? Math.ceil(totalRow / pageSize) : 0;

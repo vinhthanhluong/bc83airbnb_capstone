@@ -1,7 +1,7 @@
 import type { BookingItem } from '@/interface/booking.interface';
 import { Eye, SquarePen, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
-import { bookingManagementStore } from '@/store/bookingManagement.store';
+import { useBookingManagementStore } from '@/store/bookingManagement.store';
 import { useRemoveBooking } from '@/hooks/useBookingQuery';
 
 type BookingItemDetailProps = {
@@ -11,7 +11,7 @@ type BookingItemDetailProps = {
 
 export default function BookingItemDetail({ data, handleValueOpenPopup }: BookingItemDetailProps) {
     // Store
-    const { setIdBookingRoom, setIdBooking } = bookingManagementStore();
+    const { setIdBookingRoom, setIdBooking } = useBookingManagementStore();
 
     // Api
     const { mutate: mutateRemove, isPending: isPendingRemove } = useRemoveBooking()

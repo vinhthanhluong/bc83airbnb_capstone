@@ -16,7 +16,7 @@ import LocationItemDetail from "./LocationItemDetail";
 import { useListLocation } from "@/hooks/useLocationQuery";
 import { locationManagementStore } from "@/store/locationManagement.store";
 import PaginationCustom from "../_components/PaginationCustom";
-import { usepaginationStore } from "@/store/pagination.store";
+import { usePaginationStore } from "@/store/pagination.store";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useForm } from "react-hook-form";
 import type { LocationItem } from "@/interface/location.interface";
@@ -24,7 +24,7 @@ import type { LocationItem } from "@/interface/location.interface";
 export default function LocationManagement() {
     // Store
     const { isPopup, setIsPopup, setIdLocation } = locationManagementStore()
-    const { locationPagi, setLocationPagi } = usepaginationStore();
+    const { locationPagi, setLocationPagi } = usePaginationStore();
 
     // State
     const [mode, setMode] = useState<"add" | "edit" | null>(null);
