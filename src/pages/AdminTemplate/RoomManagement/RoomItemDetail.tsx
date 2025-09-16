@@ -1,5 +1,6 @@
 import { useDetailLocation } from "@/hooks/useLocationQuery";
 import type { RoomItem } from "@/interface/room.interface";
+import { roomManagementStore } from "@/store/roomManagement.store";
 import { Search, SquarePen, Trash2 } from "lucide-react";
 import { useState } from "react";
 
@@ -9,7 +10,12 @@ type RoomItemDetailProps = {
 }
 
 export default function RoomItemDetail({ data, handleValueOpenPopup }: RoomItemDetailProps) {
+    // State
     const [isAction, setIsAction] = useState<boolean>(false);
+
+    // Store
+    const { setIdRoom } = roomManagementStore();
+
 
     // Api
     const { data: dataLocation } = useDetailLocation(data.maViTri);
@@ -26,12 +32,18 @@ export default function RoomItemDetail({ data, handleValueOpenPopup }: RoomItemD
                     size={20} className="group-[.active]:opacity-100 opacity-0 absolute z-2 top-4 right-4 text-white cursor-pointer hover:text-yellow-300 transition-all duration-300" />
                 <Trash2 size={20} className="group-[.active]:opacity-100 opacity-0 absolute z-2 top-4 left-4 text-white cursor-pointer hover:text-red-400 transition-all duration-300" />
                 <Search
-                    onClick={() => handleValueOpenPopup('detail')}
+                    onClick={() => {
+                        handleValueOpenPopup('detail')
+                        setIdRoom(data.id)
+                    }}
                     className="group-[.active]:opacity-100 opacity-0 absolute inset-0 text-white m-auto cursor-pointer z-2 hover:text-blue-300 transition-all duration-300" size={30} />
             </div>
             <div className="block text-sm">
                 <p
-                    onClick={() => handleValueOpenPopup('detail')}
+                    onClick={() => {
+                        handleValueOpenPopup('detail')
+                        setIdRoom(data.id)
+                    }}
                     className="font-medium line-clamp-1 mb-0.5 cursor-pointer duration-300 transition-all hover:text-blue-500">{data.tenPhong}</p>
                 <div className="flex justify-between items-center">
                     <p className="line-clamp-1 text-gray-400">{dataLocation?.tinhThanh} - {dataLocation?.tenViTri}</p>

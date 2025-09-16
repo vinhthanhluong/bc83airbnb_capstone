@@ -23,25 +23,26 @@ import { Dialog } from "@/components/ui/dialog";
 import RoomPopup from "./RoomPopup";
 import RoomPopupDetail from "./RoomPopupDetail";
 import RoomItemDetail from "./RoomItemDetail";
-import { useListRoom } from "@/hooks/useRoomQuery";
+import { useDetailRoom, useListRoom } from "@/hooks/useRoomQuery";
 import type { RoomItem } from "@/interface/room.interface";
 import PaginationCustom from "../_components/PaginationCustom";
 import { usePaginationStore } from "@/store/pagination.store";
+import { roomManagementStore } from "@/store/roomManagement.store";
 
 export default function RoomManagement() {
     // State
-    const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
     const [mode, setMode] = useState<"add" | "edit" | "detail" | null>(null);
     const [popupData, setPopupData] = useState(null);
 
     // Store
     const { roomPagi, setRoomPagi } = usePaginationStore();
+    const { isPopup, setIsPopup, idRoom } = roomManagementStore();
 
     // Handle
     const handleOpenPopup = (modeData: any, data?: any) => {
         setMode(modeData)
         setPopupData(data || null);
-        setIsOpenPopup(true);
+        setIsPopup()
     }
 
     const handleValueOpenPopup = (data: string) => {
@@ -50,7 +51,7 @@ export default function RoomManagement() {
 
     // Api
     const { data: dataListRoom, isLoading: isLoadingListRoom } = useListRoom(roomPagi, 10);
-
+    const { data: dataDetailRoom, isLoading: isLoadingDetailRoom } = useDetailRoom(String(idRoom));
 
     return (
         <>
@@ -92,10 +93,10 @@ export default function RoomManagement() {
                     </div>
                 </div>
             </div>
-            <Dialog open={isOpenPopup} onOpenChange={setIsOpenPopup}>
+            <Dialog open={isPopup} onOpenChange={setIsPopup}>
                 {mode === "add" && <RoomPopup mode="add" />}
                 {mode === "edit" && <RoomPopup mode="edit" data={popupData} />}
-                {mode === "detail" && <RoomPopupDetail data={popupData} />}
+                {mode === "detail" && <RoomPopupDetail data={dataDetailRoom} />}
             </Dialog>
         </>
     )
