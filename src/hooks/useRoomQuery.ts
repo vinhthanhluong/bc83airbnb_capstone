@@ -5,7 +5,7 @@ export const useDetailRoom = (id: string, optional?: {}) => {
     return useQuery({
         queryKey: ['detail-room', id],
         queryFn: () => detailRoomApi(id),
-        enabled: !!id,
+        enabled: id !== '0',
         ...optional
     })
 }
