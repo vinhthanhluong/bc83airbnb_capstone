@@ -100,26 +100,13 @@ export const useUpdateUser = (optional?: {}) => {
 
 export const useUpdateUserImage = (optional?: {}) => {
     const queryClient = useQueryClient();
-    const { setIsPopup } = useUserManagementStore();
 
     return useMutation({
         mutationFn: updateUserImageApi,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['list-user'] })
-            setIsPopup()
-            showDialog({
-                title: 'Cập nhật avatar thành công',
-                icon: 'success',
-            })
         },
-        onError: (error: any) => {
-            setIsPopup()
-            showDialog({
-                title: 'Cập nhật avatar thất bại',
-                icon: 'error',
-                text: error?.response?.data?.content
-            })
-        },
+        
         ...optional
     })
 }

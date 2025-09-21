@@ -39,7 +39,6 @@ export default function AuthPopupImg() {
     }
 
     const onSubmit = (data: { avatar: File | null }) => {
-        // console.log("🌲 ~ onSubmit ~ data:", data)
         if (!data.avatar) return;
         const formData = new FormData();
         formData.append('formFile', data.avatar)
