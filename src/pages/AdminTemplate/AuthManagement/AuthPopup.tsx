@@ -32,6 +32,7 @@ import { Calendar } from "@/components/ui/calendar"
 import type { UserPostResponse } from "@/interface/user.interface"
 import { useAddUser, useDetailUser, useUpdateUser } from "@/hooks/useUserQuery";
 import { useUserManagementStore } from "@/store/userManagement.store";
+import { useAuthStore } from "@/store/auth.store";
 
 interface AuthPopupProps {
     mode: "add" | "edit",
@@ -59,7 +60,10 @@ const schemaEdit = schema.extend({
 type AuthPopupForms = z.infer<typeof schema>;
 
 export default function AuthPopup({ mode }: AuthPopupProps) {
+    // Store
     const { idUser } = useUserManagementStore();
+    const { user, setUser } = useAuthStore();
+
     const resolverSchema = mode === "add" ? schemaAdd : schemaEdit;
 
     const [openDate, setOpenDate] = useState(false)
@@ -109,6 +113,17 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
             mutateUpdate({
                 id: dataDetailUser.id,
                 data: data as UserPostResponse,
+            }, {
+                onSuccess: () => {
+                    if (user?.user.id !== data.id) return
+                    const newUser = {
+                        ...user, user: {
+                            ...user?.user,
+                            ...data
+                        }
+                    }
+                    setUser(newUser)
+                }
             });
         } else {
             mutateAdd(data as UserPostResponse, {
