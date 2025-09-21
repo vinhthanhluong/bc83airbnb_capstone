@@ -4,7 +4,6 @@ import type { ListUser, ListUserPagi, UserPostResponse, UserPutResponse } from "
 
 export const listUserPagiApi = async (pageIndex: number, pageSize: number, keyword?: string): Promise<ListUserPagi<ListUser>> => {
     try {
-
         const key = keyword ? `&keyword=${keyword}` : '';
         // https://airbnbnew.cybersoft.edu.vn/api/users/phan-trang-tim-kiem?pageIndex=1&pageSize=10&keyword=thanh
         const response = await api.get<BaseApiResponse<ListUserPagi<ListUser>>>(`users/phan-trang-tim-kiem?pageIndex=${pageIndex}&pageSize=${pageSize}${key}`);

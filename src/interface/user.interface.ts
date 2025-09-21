@@ -27,6 +27,7 @@ export interface UserPostResponse {
     birthday: string;
     gender: boolean;
     role: string;
+    avatar?: string;
 }
 
 export interface UserPutResponse {

@@ -1,4 +1,4 @@
-import { CalendarDays, ChevronDownIcon, CircleUser, LoaderCircle, Mail, Phone, SquareAsterisk, User, UserRoundPen, VenusAndMars } from "lucide-react"
+import { CalendarDays, ChevronDownIcon, CircleUser, LoaderCircle, Mail, Phone, SquareAsterisk, User, UserRoundPen, VenusAndMars, Image, X } from "lucide-react"
 import { useForm, Controller } from "react-hook-form"
 import { useEffect, useState } from "react";
 import z from "zod";
@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import type { UserPostResponse } from "@/interface/user.interface"
-import { useAddUser, useDetailUser, useUpdateUser } from "@/hooks/useUserQuery";
+import { useAddUser, useDetailUser, useUpdateUser, useUpdateUserImage } from "@/hooks/useUserQuery";
 import { useUserManagementStore } from "@/store/userManagement.store";
 import { useAuthStore } from "@/store/auth.store";
 
@@ -169,34 +169,6 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
                             <Input className="h-10" id="name" placeholder="Nhập họ tên" {...register("name")} />
                             {errors.name?.message && <p className="text-red-300 text-xs">{errors.name.message}</p>}
                         </div>
-                        {/* <div className="grid gap-4 row-span-3">
-                            <div className="block space-y-2">
-                                <Label htmlFor="picture"><Image size={18} className="text-green-400" />Avatar</Label>
-                                <div className="relative flex items-center justify-center w-full">
-                                    <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-51 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                            <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                                            </svg>
-                                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-                                        </div>
-                                        <img src={previewImage(avatar)} className="w-full max-h-full object-contain" alt="" />
-                                        <input id="dropzone-file" type="file" accept='.png,jpeg,.jpg' className="hidden"
-                                        // onClick={(e: React.MouseEvent<HTMLInputElement>) => {
-                                        //     const file = e.currentTarget.files?.[0];
-                                        //     setValue("avatar", file);
-                                        // }} 
-                                        />
-                                    </label>
-                                    <X
-                                        // onClick={() => {
-                                        //     setValue("avatar", "")
-                                        // }}
-                                        className="absolute z-2 top-1 right-1 cursor-pointer hover:text-red-400 transition-all duration-300" />
-                                </div>
-                            </div>
-                        </div> */}
                         <div className="grid gap-2">
                             <Label htmlFor="phone"><Phone size={18} className="text-green-400" />Số điện thoại</Label>
                             <Input className="h-10" id="phone" placeholder="Nhập số điện thoại" {...register("phone")} />

@@ -12,6 +12,7 @@ type AuthItemDetailProps = {
     handleValueOpenPopup: (data: string) => void,
 }
 export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemDetailProps) {
+    console.log("🌲 ~ AuthItemDetail ~ data:", data)
     const birthday = data.birthday.replaceAll('-', '/').slice(0, 10)
     // navigate
     const navigate = useNavigate();
@@ -40,12 +41,12 @@ export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemD
         <tr className="bg-white border-t border-gray-200 hover:bg-gray-50 text-gray-800">
             <td className="py-3 px-4 pl-6">
                 <div
-                    onMouseOver={() => setIsAction(true)}
-                    onMouseLeave={() => setIsAction(false)}
-                    onClick={() => {
-                        handleValueOpenPopup('editImg')
-                        setIdUser(data.id)
-                    }}
+                    // onMouseOver={() => setIsAction(true)}
+                    // onMouseLeave={() => setIsAction(false)}
+                    // onClick={() => {
+                    //     handleValueOpenPopup('editImg')
+                    //     setIdUser(data.id)
+                    // }}
                     className={`group ${isAction ? " active" : ""} size-12 rounded-full bg-gray-300 rounded overflow-hidden cursor-pointer relative`}>
                     {
                         data.avatar ?
