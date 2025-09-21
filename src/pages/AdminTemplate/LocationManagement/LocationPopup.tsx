@@ -6,14 +6,23 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
+
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useAddLocation, useDetailLocation, useUpdateLocation } from "@/hooks/useLocationQuery"
-import type { LocationItem } from "@/interface/location.interface"
+import { useAddLocation, useAddLocationImages, useDetailLocation, useListProvince, useUpdateLocation } from "@/hooks/useLocationQuery"
+import type { DistrictsItem, LocationItem, ProvinceItem } from "@/interface/location.interface"
 import { locationManagementStore } from "@/store/locationManagement.store"
 import { Building2, Earth, Image, MapPin, MapPinned, X } from "lucide-react"
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 
 interface LocationPopupProps {
     mode: "add" | "edit",
@@ -21,14 +30,18 @@ interface LocationPopupProps {
 
 export function LocationPopup({ mode }: LocationPopupProps) {
     // Store
-    const { idLocation, setIdLocation } = locationManagementStore()
+    const { idLocation, selectedProvinceCode, setSelectedProvinceCode } = locationManagementStore()
 
     // API
     const { data: dataDetail, isLoading: isLoadingDetail } = useDetailLocation(idLocation);
     const { mutate: mutateAdd, isPending: isPendingAdd } = useAddLocation();
-    const { mutate: mutateUpdate, isPending: isPendingUpdate } = useUpdateLocation(1,{});
+    const { mutate: mutateAddImage, isPending: isPendingAddImage } = useAddLocationImages();
+    const { mutate: mutateUpdate, isPending: isPendingUpdate } = useUpdateLocation();
+    const { data: dataListProvince } = useListProvince('lv2');
 
-    const { register, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm<LocationItem>({
+    const selectedProvince = dataListProvince?.find((p) => p.name === (selectedProvinceCode));
+
+    const { register, handleSubmit, watch, setValue, reset, control, formState: { errors } } = useForm<LocationItem>({
         defaultValues: {
             tenViTri: "",
             tinhThanh: "",
@@ -47,16 +60,21 @@ export function LocationPopup({ mode }: LocationPopupProps) {
     }, [idLocation, dataDetail, reset]);
 
     const previewImg = watch('hinhAnh');
+    const previewImgLink = (file: any) => {
+        if (file instanceof Blob || file instanceof File) {
+            const link = URL.createObjectURL(file);
+            return link;
+        }
+        return file;
+    }
     const onSubmit = (data: LocationItem) => {
         const formData = new FormData();
-        for (const key in data) {
-            const typeKey = key as keyof LocationItem;
-            formData.append(typeKey, String(data[typeKey]))
-        }
+        formData.append('formFile', data['hinhAnh'])
         if (dataDetail?.id) {
-            console.log('update');
-            console.log('data', data);
-            mutateUpdate(data, {
+            mutateUpdate({
+                id: dataDetail.id,
+                data: { ...data, hinhAnh: typeof data.hinhAnh === 'string' ? data.hinhAnh : "" }
+            }, {
                 onSuccess: () => {
                     reset({
                         tenViTri: "",
@@ -66,8 +84,13 @@ export function LocationPopup({ mode }: LocationPopupProps) {
                     })
                 }
             })
+            if (typeof data.hinhAnh !== 'string') {
+                mutateAddImage({
+                    id: dataDetail.id,
+                    data: formData
+                })
+            }
         } else {
-
             mutateAdd(data, {
                 onSuccess: () => {
                     reset({
@@ -79,7 +102,6 @@ export function LocationPopup({ mode }: LocationPopupProps) {
                 }
             })
         }
-
     }
 
     return (
@@ -92,10 +114,6 @@ export function LocationPopup({ mode }: LocationPopupProps) {
                 </DialogHeader>
                 <div className="overflow-auto mb-5 sm:mb-2">
                     <div className="grid sm:grid-cols-2 gap-4 p-5 max-h-[400px]">
-                        <div className="grid gap-2">
-                            <Label htmlFor="name"><MapPin size={18} className="text-red-300" />Tên vị trí</Label>
-                            <Input className="h-10" id="name" placeholder="Nhập tên vị trí" {...register('tenViTri')} />
-                        </div>
                         <div className="grid gap-4 row-span-3">
                             <div className="block space-y-2">
                                 <Label htmlFor="picture"><Image size={18} className="text-green-400" />Hình ảnh</Label>
@@ -109,13 +127,12 @@ export function LocationPopup({ mode }: LocationPopupProps) {
                                             <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
                                         </div>}
 
-                                        {previewImg && <img src={previewImg} className="w-full max-h-full object-contain" alt="" />}
-                                        <input id="dropzone-file" type="file" className="hidden"
+                                        {previewImg && <img src={previewImgLink(previewImg)} className="w-full max-h-full object-contain" alt="" />}
+                                        <input id="dropzone-file" type="file" accept='.png,jpeg,.jpg' className="hidden"
                                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                                const file = e.target.files?.[0];
+                                                const file: any = e.target.files?.[0];
                                                 if (!file) return;
-                                                const previewImg = URL.createObjectURL(file);
-                                                setValue('hinhAnh', previewImg)
+                                                setValue('hinhAnh', file)
                                             }} />
                                     </label>
                                     {previewImg && <X
@@ -125,9 +142,59 @@ export function LocationPopup({ mode }: LocationPopupProps) {
                             </div>
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="city"><Building2 size={18} className="text-blue-300" />Tỉnh thành</Label>
-                            <Input className="h-10" id="city" placeholder="Nhập tỉnh thành" {...register('tinhThanh')} />
+                            <Label htmlFor="tinhThanh"><Building2 size={18} className="text-blue-300" />Tỉnh thành</Label>
+                            {/* <Input className="h-10" id="city" placeholder="Nhập tỉnh thành" {...register('tinhThanh')} /> */}
+                            <Controller
+                                name="tinhThanh"
+                                control={control}
+                                defaultValue=""
+                                render={({ field }) => (
+                                    <Select
+                                        onValueChange={(val) => {
+                                            field.onChange(val)
+                                            setSelectedProvinceCode(val)
+                                        }}
+                                        value={field.value}
+                                    >
+                                        <SelectTrigger className="h-10 w-full">
+                                            <SelectValue placeholder="Chọn tỉnh thành" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                {dataListProvince?.map((item: ProvinceItem) => (
+                                                    <SelectItem key={item.code} value={item.name}>{item.name}</SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
                         </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="tenViTri"><MapPin size={18} className="text-red-300" />Tên vị trí</Label>
+                            {/* <Input className="h-10" id="name" placeholder="Nhập tên vị trí" {...register('tenViTri')} /> */}
+                            <Controller
+                                name="tenViTri"
+                                control={control}
+                                defaultValue=""
+                                render={({ field }) => (
+                                    <Select onValueChange={field.onChange} value={field.value}>
+                                        <SelectTrigger className="h-10 w-full">
+                                            <SelectValue placeholder="Chọn vị trí" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                {selectedProvince?.districts?.map((item: DistrictsItem) => (
+                                                    <SelectItem key={item.code} value={item.name}>{item.name}</SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
+                        </div>
+
+
                         <div className="grid gap-2">
                             <Label htmlFor="country"><Earth size={20} className="text-yellow-400" />Quốc gia</Label>
                             <Input className="h-10" id="country" placeholder="Nhập quốc gia" {...register('quocGia')} />

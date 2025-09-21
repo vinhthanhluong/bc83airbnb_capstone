@@ -1,4 +1,5 @@
-import { addLocationApi, detailLocationApi, listLocationApi, removeLocationApi, updateLocationApi } from "@/services/location.api"
+import type { LocationItem, LocationPagi } from "@/interface/location.interface"
+import { addLocationApi, addLocationImageApi, detailLocationApi, listLocationApi, listProvinceApi, removeLocationApi, updateLocationApi } from "@/services/location.api"
 import { locationManagementStore } from "@/store/locationManagement.store"
 import { showDialog } from "@/utils/dialog"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -49,20 +50,17 @@ export const useAddLocation = (optional?: {}) => {
 
 export const useRemoveLocation = (optional?: {}) => {
     const queryClient = useQueryClient();
-    const { setIsPopup } = locationManagementStore();
 
     return useMutation({
         mutationFn: removeLocationApi,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['list-location'] })
-            setIsPopup()
             showDialog({
                 title: 'Xoá vị trí thành công',
                 icon: 'success',
             })
         },
         onError: (error: any) => {
-            setIsPopup()
             showDialog({
                 title: 'Xóa vị trí thất bại',
                 icon: 'error',
@@ -73,12 +71,12 @@ export const useRemoveLocation = (optional?: {}) => {
     })
 }
 
-export const useUpdateLocation = (id: number, data: any, optional?: {}) => {
+export const useUpdateLocation = (optional?: {}) => {
     const queryClient = useQueryClient();
     const { setIsPopup } = locationManagementStore();
 
-    return useMutation({
-        mutationFn: ({ id, data }: any) => updateLocationApi(id, data),
+    return useMutation<LocationItem, any, any>({
+        mutationFn: ({ id, data }) => updateLocationApi(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['list-location'] })
             setIsPopup()
@@ -95,6 +93,26 @@ export const useUpdateLocation = (id: number, data: any, optional?: {}) => {
                 text: error?.response?.data?.content
             })
         },
+        ...optional
+    })
+}
+
+export const useAddLocationImages = (optional?: {}) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ id, data }: { id: number, data: FormData }) => addLocationImageApi(id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['list-location'] })
+        },
+        ...optional
+    })
+}
+
+export const useListProvince = (depth?: 'lv2', optional?: {}) => {
+    return useQuery({
+        queryKey: ['list-province'],
+        queryFn: () => listProvinceApi(depth),
         ...optional
     })
 }

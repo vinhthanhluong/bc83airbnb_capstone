@@ -13,13 +13,13 @@ import {
 import { Dialog } from "@/components/ui/dialog";
 import { LocationPopup } from "./LocationPopup";
 import LocationItemDetail from "./LocationItemDetail";
-import { useListLocation } from "@/hooks/useLocationQuery";
+import { useListLocation, useListProvince } from "@/hooks/useLocationQuery";
 import { locationManagementStore } from "@/store/locationManagement.store";
 import PaginationCustom from "../_components/PaginationCustom";
 import { usePaginationStore } from "@/store/pagination.store";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useForm } from "react-hook-form";
-import type { LocationItem } from "@/interface/location.interface";
+import type { LocationItem, ProvinceItem } from "@/interface/location.interface";
 
 export default function LocationManagement() {
     // Store
@@ -50,9 +50,8 @@ export default function LocationManagement() {
     // API
     const keyworDebounce = useDebounce(keywordSearch, 500)
     const { data: dataListLocation, isLoading: isLoadingListLocation } = useListLocation(locationPagi, 21, keyworDebounce);
-
+    const { data: dataListProvince } = useListProvince();
     const totalPg = dataListLocation?.totalRow ? Math.ceil(dataListLocation?.totalRow / dataListLocation?.pageSize) : 0;
-
 
     return (
         <>
@@ -79,16 +78,17 @@ export default function LocationManagement() {
                     <Input placeholder="Tìm vị trí" className="h-10 p-4 ps-10 " {...register('keyword')} />
                 </div>
 
-                {/* <Select defaultValue="user">
+                <Select defaultValue="all">
                     <SelectTrigger className="w-[180px] min-h-10">
                         <SelectValue placeholder="Loại" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">Tất cả</SelectItem>
-                        <SelectItem value="user">Hồ chí minh</SelectItem>
-                        <SelectItem value="admin">Hà nội</SelectItem>
+                        {/* {dataListProvince?.map((item: ProvinceItem) => (
+                            <SelectItem key={item.code} value={String(item.code)}>{item.name}</SelectItem>
+                        ))} */}
                     </SelectContent>
-                </Select> */}
+                </Select>
             </div>
 
             <div className="border border-[#eee] rounded-lg shadow-sm w-full">
