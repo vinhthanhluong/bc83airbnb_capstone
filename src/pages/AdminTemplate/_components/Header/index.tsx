@@ -2,11 +2,13 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/auth.store'
 import { useEffect, useRef, useState } from 'react';
 import { useDashboardStore } from '@/store/dashboard.store';
+import { useUserManagementStore } from '@/store/userManagement.store';
 
 export default function Header() {
   // Store
   const { setIsMenu } = useDashboardStore();
   const { user, clearUser } = useAuthStore();
+  // console.log("🌲 ~ Header ~ user:", user?.user)
   // State
   const [isActiveHamburger, setIsActiveHamburger] = useState<boolean>(false);
   const [isActiveAvatar, setIsActiveAvatar] = useState<boolean>(false);

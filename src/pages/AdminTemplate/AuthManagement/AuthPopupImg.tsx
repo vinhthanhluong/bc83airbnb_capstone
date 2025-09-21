@@ -11,8 +11,17 @@ import {
 } from "@/components/ui/dialog"
 
 import { useUpdateUserImage } from "@/hooks/useUserQuery";
+import { useAuthStore } from "@/store/auth.store";
+import { useUserManagementStore } from "@/store/userManagement.store";
+
+
 
 export default function AuthPopupImg() {
+
+    // Store
+    const { idUser } = useUserManagementStore();
+    console.log("🌲 ~ AuthPopupImg ~ idUser:", idUser)
+    const { user, setUser } = useAuthStore();
 
     const { handleSubmit, watch, setValue, reset, formState: { errors }, } = useForm<{ avatar: File | null }>({
         defaultValues: {
@@ -30,10 +39,24 @@ export default function AuthPopupImg() {
     }
 
     const onSubmit = (data: { avatar: File | null }) => {
+        // console.log("🌲 ~ onSubmit ~ data:", data)
         if (!data.avatar) return;
         const formData = new FormData();
         formData.append('formFile', data.avatar)
-        mutateUpdateImg(formData)
+        mutateUpdateImg(formData, {
+            onSuccess: () => {
+                if (user?.user.id !== idUser) return;
+                const avt: any = data.avatar;
+                const linkImage = URL.createObjectURL(avt);
+                const newUser = {
+                    ...user, user: {
+                        ...user?.user,
+                        avatar: linkImage,
+                    }
+                }
+                setUser(newUser)
+            }
+        })
     }
 
     return (

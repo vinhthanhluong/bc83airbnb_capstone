@@ -10,12 +10,12 @@ api.interceptors.request.use((config: any) => {
     const userLocal: string | null = localStorage.getItem('user');
     const userParsed: AuthApiResponse<CurrentUser> = userLocal ? JSON.parse(userLocal) : null;
     const userToken = userParsed ? userParsed.token : null;
-    // console.log("🌲 ~ gửi request với token:", userToken);
     return {
         ...config,
         headers: {
             tokenCybersoft: import.meta.env.VITE_URL_TOKEN,
-            token: userToken ? `Bearer ${userToken}` : ''
+            Authenticator: userToken ? `Bearer ${userToken}` : '',
+            token: userToken,
         }
     }
 });

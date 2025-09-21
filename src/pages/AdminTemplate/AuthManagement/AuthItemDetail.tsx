@@ -21,7 +21,7 @@ export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemD
 
     // State
     const [isAction, setIsAction] = useState<boolean>(false);
-    
+
     // API
     const { mutate: mutateRemove, isPending: isPendingRemove } = useRemoveUser();
 
@@ -42,7 +42,10 @@ export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemD
                 <div
                     onMouseOver={() => setIsAction(true)}
                     onMouseLeave={() => setIsAction(false)}
-                    onClick={() => handleValueOpenPopup('editImg')}
+                    onClick={() => {
+                        handleValueOpenPopup('editImg')
+                        setIdUser(data.id)
+                    }}
                     className={`group ${isAction ? " active" : ""} size-12 rounded-full bg-gray-300 rounded overflow-hidden cursor-pointer relative`}>
                     {
                         data.avatar ?
