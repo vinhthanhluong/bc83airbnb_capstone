@@ -6,6 +6,9 @@ type locationManagementStore = {
 
     idLocation: number,
     setIdLocation: (numId: number) => void,
+
+    selectedProvinceCode: string | null,
+    setSelectedProvinceCode: (code: string) => void,
 }
 
 export const locationManagementStore = create<locationManagementStore>((set) => ({
@@ -14,4 +17,8 @@ export const locationManagementStore = create<locationManagementStore>((set) => 
 
     idLocation: 0,
     setIdLocation: (numId) => set({ idLocation: numId }),
+
+    selectedProvinceCode: null,
+    setSelectedProvinceCode: (code) => set({ selectedProvinceCode: code }),
 }))
+

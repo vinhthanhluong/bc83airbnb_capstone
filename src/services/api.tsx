@@ -20,5 +20,9 @@ api.interceptors.request.use((config: any) => {
     }
 });
 
+export const apiProvince = axios.create({
+    baseURL: import.meta.env.VITE_URL_API_LOCATION,
+    timeout: 30000,
+});
 
 export default api;

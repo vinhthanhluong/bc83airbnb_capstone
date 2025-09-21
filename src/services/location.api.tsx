@@ -1,6 +1,6 @@
 import type { BaseApiResponse } from "@/interface/base.interface";
-import api from "./api"
-import type { LocationItem, LocationPagi } from "@/interface/location.interface";
+import api, { apiProvince } from "./api"
+import type { DistrictsItem, LocationItem, LocationPagi, ProvinceItem } from "@/interface/location.interface";
 
 export const listLocationApi = async (pageIndex: number, pageSize: number, keyword?: string): Promise<LocationPagi<LocationItem>> => {
     try {
@@ -42,12 +42,33 @@ export const removeLocationApi = async (id: number) => {
     }
 }
 
-export const updateLocationApi = async (id: number, data: any) => {
+export const updateLocationApi = async (id: number, data: LocationItem): Promise<LocationItem> => {
     try {
         const response = await api.put<BaseApiResponse<LocationItem>>(`vi-tri/${id}`, data);
         return response.data.content
     } catch (error) {
         console.log("🌲 ~ addLocationApi ~ error:", error)
+        throw error
+    }
+}
+
+export const addLocationImageApi = async (id: number, data: FormData): Promise<LocationItem> => {
+    try {
+        const response = await api.post<BaseApiResponse<LocationItem>>(`vi-tri/upload-hinh-vitri?maViTri=${id}`, data);
+        return response.data.content
+    } catch (error) {
+        console.log("🌲 ~ addLocationImageApi ~ error:", error)
+        throw error
+    }
+}
+
+export const listProvinceApi = async (depth?: 'lv2'): Promise<ProvinceItem[]> => {
+    try {
+        const dt = depth ? "?depth=2" : "p/";
+        const response = await apiProvince.get<ProvinceItem[]>(dt);
+        return response.data
+    } catch (error) {
+        console.log("🌲 ~ listProvinceApi ~ error:", error)
         throw error
     }
 }
