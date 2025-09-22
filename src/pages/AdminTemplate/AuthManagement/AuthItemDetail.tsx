@@ -1,5 +1,5 @@
 import type { ListUser } from '@/interface/user.interface';
-import { Eye, Pencil, SquarePen, Trash2 } from 'lucide-react';
+import { Eye, SquarePen, Trash2 } from 'lucide-react';
 // import { format } from 'date-fns'
 import { useRemoveUser } from '@/hooks/useUserQuery';
 import { confirmDialog } from '@/utils/dialog';
@@ -12,7 +12,6 @@ type AuthItemDetailProps = {
     handleValueOpenPopup: (data: string) => void,
 }
 export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemDetailProps) {
-    console.log("🌲 ~ AuthItemDetail ~ data:", data)
     const birthday = data.birthday.replaceAll('-', '/').slice(0, 10)
     // navigate
     const navigate = useNavigate();
@@ -43,7 +42,7 @@ export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemD
                     className={`size-12 rounded-full bg-gray-300 rounded overflow-hidden cursor-pointer relative`}>
                     {
                         data.avatar ?
-                            (<img className="w-full h-full object-cover" alt={data.name} src={data.avatar} />) :
+                            (<img className="w-full h-full object-cover" alt={data.name} src={data.avatar} onError={(e) => e.currentTarget.src="https://placehold.jp/ababab/ffffff/200x200.jpg?text=NoImg"} />) :
                             (
                                 <div className="cursor-pointer w-full h-full flex items-center justify-center bg-gradient-to-r from-sky-300 to-blue-300 rounded-full">
                                     <p className="text-lg text-white font-medium">
@@ -52,9 +51,9 @@ export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemD
                                 </div>
                             )
                     }
-                    <div className='group-[.active]:opacity-100 absolute inset-0 bg-gray-200/40 flex items-center justify-center transition-all duration-300 opacity-0'>
+                    {/* <div className='group-[.active]:opacity-100 absolute inset-0 bg-gray-200/40 flex items-center justify-center transition-all duration-300 opacity-0'>
                         <Pencil className='text-gray-800' size={18} />
-                    </div>
+                    </div> */}
                 </div>
             </td>
             <td className="py-3 px-4">

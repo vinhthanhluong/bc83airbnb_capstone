@@ -5,10 +5,10 @@ import BookingItemDetail from "./BookingItemDetail";
 import BookingPopupDetail from "./BookingPopupDetail";
 import { useBookingManagementStore } from "@/store/bookingManagement.store";
 import { useDetailUserBooking } from "@/hooks/useBookingQuery";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import type { BookingItem } from "@/interface/booking.interface";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { ChevronLeft, Plus } from "lucide-react";
 import { BookingPopup } from "./BookingPopup";
 
 export default function BookingManagement() {
@@ -18,9 +18,10 @@ export default function BookingManagement() {
 
     // Param
     const { userID } = useParams<string>()
+    const navigate = useNavigate();
 
     // Store
-    const { isPopup, setIsPopup , setIdBooking } = useBookingManagementStore()
+    const { isPopup, setIsPopup, setIdBooking } = useBookingManagementStore()
 
     // Handle
     const handleOpenPopup = (modeData: string) => {
@@ -48,9 +49,14 @@ export default function BookingManagement() {
                     <Plus size={20} /> Thêm
                 </Button>
             </div>
+            <div
+                onClick={() => navigate("/dashboard/auth-management")}
+                className="flex gap-1 items-center mb-3 cursor-pointer hover:text-blue-300 transition-all duration-300">
+                <ChevronLeft size={16} />Quay lại
+            </div>
             <div className="border border-[#eee] rounded-lg shadow-sm w-full ">
                 <div className="relative overflow-x-auto rounded-lg">
-                    <table className="w-full text-sm text-left text-gray-500 min-w-[1240px]">
+                    <table className="w-full text-sm text-left text-gray-500 min-w-[770px]">
                         <thead className="bg-gray-50">
                             <tr>
                                 <th className="py-3 px-4 font-medium text-gray-600 w-[13%]">Ngày đến</th>
@@ -61,9 +67,17 @@ export default function BookingManagement() {
                             </tr>
                         </thead>
                         <tbody>
-                            {dataBooking?.map((item: BookingItem, index: number) => {
-                                return <BookingItemDetail key={index} data={item} handleValueOpenPopup={handleValueOpenPopup} />
-                            })}
+                            {dataBooking && dataBooking.length > 0 ? (
+                                dataBooking?.map((item: BookingItem, index: number) => {
+                                    return <BookingItemDetail key={index} data={item} handleValueOpenPopup={handleValueOpenPopup} />
+                                })
+                            ) : (
+                                <tr className="bg-white border-t border-gray-200 hover:bg-gray-50 text-gray-800">
+                                    <td className="py-7 text-gray-400 text-center" colSpan={5}>
+                                        Không tìm thấy kết quả đặt phòng
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>

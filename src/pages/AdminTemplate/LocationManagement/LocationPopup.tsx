@@ -18,15 +18,26 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useAddLocation, useAddLocationImages, useDetailLocation, useListProvince, useUpdateLocation } from "@/hooks/useLocationQuery"
-import type { DistrictsItem, LocationItem, ProvinceItem } from "@/interface/location.interface"
+import type { DistrictsItem, ProvinceItem } from "@/interface/location.interface"
 import { locationManagementStore } from "@/store/locationManagement.store"
 import { Building2, Earth, Image, MapPin, MapPinned, X } from "lucide-react"
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form"
-
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod"
 interface LocationPopupProps {
     mode: "add" | "edit",
 }
+
+const schema = z.object({
+    id: z.number().optional(),
+    tenViTri: z.string().nonempty("Vui lòng chọn vị trí"),
+    tinhThanh: z.string().nonempty("Vui lòng chọn tỉnh thành"),
+    quocGia: z.string().nonempty("Vui lòng nhập quốc gia"),
+    hinhAnh: z.union([z.string(), z.instanceof(File)]).optional(),
+});
+
+type LocationItemForms = z.infer<typeof schema>;
 
 export function LocationPopup({ mode }: LocationPopupProps) {
     // Store
@@ -41,13 +52,15 @@ export function LocationPopup({ mode }: LocationPopupProps) {
 
     const selectedProvince = dataListProvince?.find((p) => p.name === (selectedProvinceCode));
 
-    const { register, handleSubmit, watch, setValue, reset, control } = useForm<LocationItem>({
+    const { register, handleSubmit, watch, setValue, reset, control, formState: { errors } } = useForm<LocationItemForms>({
         defaultValues: {
+            id: 0,
             tenViTri: "",
             tinhThanh: "",
             quocGia: "",
-            hinhAnh: ""
-        }
+            hinhAnh: "",
+        },
+        resolver: zodResolver(schema)
     })
 
     useEffect(() => {
@@ -67,9 +80,7 @@ export function LocationPopup({ mode }: LocationPopupProps) {
         }
         return file;
     }
-    const onSubmit = (data: LocationItem) => {
-        const formData = new FormData();
-        formData.append('formFile', data['hinhAnh'])
+    const onSubmit = (data: LocationItemForms) => {
         if (dataDetail?.id) {
             mutateUpdate({
                 id: dataDetail.id,
@@ -84,14 +95,21 @@ export function LocationPopup({ mode }: LocationPopupProps) {
                     })
                 }
             })
-            if (typeof data.hinhAnh !== 'string') {
+
+            if (data.hinhAnh && data.hinhAnh instanceof File) {
+                const formData = new FormData();
+                formData.append('formFile', data.hinhAnh)
                 mutateAddImage({
                     id: dataDetail.id,
                     data: formData
                 })
             }
         } else {
-            mutateAdd(data, {
+            mutateAdd({
+                ...data,
+                id: 0,
+                hinhAnh: typeof data.hinhAnh === "string" ? data.hinhAnh : "",
+            }, {
                 onSuccess: () => {
                     reset({
                         tenViTri: "",
@@ -171,6 +189,7 @@ export function LocationPopup({ mode }: LocationPopupProps) {
                                     </Select>
                                 )}
                             />
+                            {errors.tinhThanh?.message && <p className="text-red-300 text-xs">{errors.tinhThanh?.message}</p>}
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="tenViTri"><MapPin size={18} className="text-red-300" />Tên vị trí</Label>
@@ -194,12 +213,14 @@ export function LocationPopup({ mode }: LocationPopupProps) {
                                     </Select>
                                 )}
                             />
+                            {errors.tenViTri?.message && <p className="text-red-300 text-xs">{errors.tenViTri?.message}</p>}
                         </div>
 
 
                         <div className="grid gap-2">
                             <Label htmlFor="country"><Earth size={20} className="text-yellow-400" />Quốc gia</Label>
                             <Input className="h-10" id="country" placeholder="Nhập quốc gia" {...register('quocGia')} />
+                            {errors.quocGia?.message && <p className="text-red-300 text-xs">{errors.quocGia?.message}</p>}
                         </div>
                     </div>
                 </div>
