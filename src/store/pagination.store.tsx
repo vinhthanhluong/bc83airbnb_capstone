@@ -1,4 +1,3 @@
-import { Store } from 'lucide-react'
 import { create } from 'zustand'
 
 type paginationStore = {

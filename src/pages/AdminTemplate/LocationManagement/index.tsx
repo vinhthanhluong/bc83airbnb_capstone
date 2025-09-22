@@ -20,7 +20,6 @@ import { usePaginationStore } from "@/store/pagination.store";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useForm, Controller } from "react-hook-form";
 import type { LocationItem, ProvinceItem } from "@/interface/location.interface";
-import { file } from "zod";
 
 export default function LocationManagement() {
     // Store

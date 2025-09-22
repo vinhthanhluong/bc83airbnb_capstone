@@ -21,7 +21,7 @@ export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemD
     const { setIdUser } = useUserManagementStore();
 
     // State
-    const [isAction, setIsAction] = useState<boolean>(false);
+    
     // API
     const { mutate: mutateRemove } = useRemoveUser();
 
@@ -40,13 +40,7 @@ export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemD
         <tr className="bg-white border-t border-gray-200 hover:bg-gray-50 text-gray-800">
             <td className="py-3 px-4 pl-6">
                 <div
-                    // onMouseOver={() => setIsAction(true)}
-                    // onMouseLeave={() => setIsAction(false)}
-                    // onClick={() => {
-                    //     handleValueOpenPopup('editImg')
-                    //     setIdUser(data.id)
-                    // }}
-                    className={`group ${isAction ? " active" : ""} size-12 rounded-full bg-gray-300 rounded overflow-hidden cursor-pointer relative`}>
+                    className={`size-12 rounded-full bg-gray-300 rounded overflow-hidden cursor-pointer relative`}>
                     {
                         data.avatar ?
                             (<img className="w-full h-full object-cover" alt={data.name} src={data.avatar} />) :

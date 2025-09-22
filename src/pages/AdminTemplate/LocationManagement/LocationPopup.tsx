@@ -21,7 +21,7 @@ import { useAddLocation, useAddLocationImages, useDetailLocation, useListProvinc
 import type { DistrictsItem, LocationItem, ProvinceItem } from "@/interface/location.interface"
 import { locationManagementStore } from "@/store/locationManagement.store"
 import { Building2, Earth, Image, MapPin, MapPinned, X } from "lucide-react"
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form"
 
 interface LocationPopupProps {
@@ -41,7 +41,7 @@ export function LocationPopup({ mode }: LocationPopupProps) {
 
     const selectedProvince = dataListProvince?.find((p) => p.name === (selectedProvinceCode));
 
-    const { register, handleSubmit, watch, setValue, reset, control, formState: { errors } } = useForm<LocationItem>({
+    const { register, handleSubmit, watch, setValue, reset, control } = useForm<LocationItem>({
         defaultValues: {
             tenViTri: "",
             tinhThanh: "",

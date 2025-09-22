@@ -1,13 +1,4 @@
 import { useState } from "react";
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination";
 import { Dialog } from "@/components/ui/dialog";
 
 import BookingItemDetail from "./BookingItemDetail";
