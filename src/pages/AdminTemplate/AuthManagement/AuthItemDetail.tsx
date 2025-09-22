@@ -3,7 +3,7 @@ import { Eye, Pencil, SquarePen, Trash2 } from 'lucide-react';
 // import { format } from 'date-fns'
 import { useRemoveUser } from '@/hooks/useUserQuery';
 import { confirmDialog } from '@/utils/dialog';
-import { useState } from 'react';
+// import { useState } from 'react';
 import { useUserManagementStore } from '@/store/userManagement.store';
 import { useNavigate } from 'react-router-dom';
 
@@ -21,7 +21,7 @@ export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemD
     const { setIdUser } = useUserManagementStore();
 
     // State
-    
+
     // API
     const { mutate: mutateRemove } = useRemoveUser();
 

@@ -36,7 +36,7 @@ export const addUserApi = async (data: UserPostResponse): Promise<UserPostRespon
 
 export const removeUserApi = async (id: number) => {
     try {
-        const response = await api.delete(`users?id=${id}`);
+        await api.delete(`users?id=${id}`);
     } catch (error) {
         console.log("🌲 ~ removeUserApi ~ error:", error)
         throw error
