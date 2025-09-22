@@ -19,7 +19,7 @@ export default function LoginPage() {
     const { user, setUser } = useAuthStore();
     const navigate = useNavigate();
 
-    const { mutate: handleLogin, isPending: isPendingLogin } = useLoginForm();
+    const { mutate: handleLogin } = useLoginForm();
 
     const {
         register,

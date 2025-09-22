@@ -50,8 +50,8 @@ export default function RoomManagement() {
     }
 
     // Api
-    const { data: dataListRoom, isLoading: isLoadingListRoom } = useListRoom(roomPagi, 10);
-    const { data: dataDetailRoom, isLoading: isLoadingDetailRoom } = useDetailRoom(String(idRoom));
+    const { data: dataListRoom, } = useListRoom(roomPagi, 10);
+    const { data: dataDetailRoom, } = useDetailRoom(String(idRoom));
 
     return (
         <>
