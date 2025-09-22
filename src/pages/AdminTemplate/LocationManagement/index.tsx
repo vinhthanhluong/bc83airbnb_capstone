@@ -29,7 +29,6 @@ export default function LocationManagement() {
     // State
     const [mode, setMode] = useState<"add" | "edit" | null>(null);
     const [listLocationFS, setListLocationFS] = useState<LocationItem[] | null>(null);
-    console.log("🌲 ~ LocationManagement ~ listLocationFS:", listLocationFS)
 
     // handle
     const handleOpenPopup = (modeData: any) => {
