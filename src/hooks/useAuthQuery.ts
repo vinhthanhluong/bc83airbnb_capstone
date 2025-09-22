@@ -1,5 +1,5 @@
 import { LoginApi } from "@/services/auth.api";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 type LoginResquest = {
     email: string,

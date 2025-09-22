@@ -15,7 +15,7 @@ export default function BookingPopupDetail() {
     // Store
     const { idBookingRoom } = useBookingManagementStore();
 
-    const { data: dataRoomDetail, isLoading: isLoadingRoomBooking } = useDetailRoom(String(idBookingRoom))
+    const { data: dataRoomDetail } = useDetailRoom(String(idBookingRoom))
 
     return (
         <DialogContent className="sm:w-[calc(100%-2rem)] sm:max-w-[1000px] p-0 gap-0">
@@ -25,7 +25,7 @@ export default function BookingPopupDetail() {
                 </DialogTitle>
             </DialogHeader>
             <div className="overflow-auto mb-5 sm:mb-2">
-                <div className="max-h-[400px]">
+                <div className="max-h-[600px]">
                     <div className="block p-6">
                         <div className="img  mb-3">
                             <img src={dataRoomDetail?.hinhAnh} className="w-full max-h-[300px] object-contain" alt={dataRoomDetail?.tenPhong} />

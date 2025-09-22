@@ -42,7 +42,7 @@ export default function BookingManagement() {
     }
 
     // Api
-    const { data: dataBooking, isLoading: isLoadingBooking } = useDetailUserBooking(String(userID));
+    const { data: dataBooking } = useDetailUserBooking(String(userID));
 
     return (
         <>

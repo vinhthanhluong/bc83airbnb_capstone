@@ -1,4 +1,4 @@
-import { CalendarDays, ChevronDownIcon, CircleUser, LoaderCircle, Mail, Phone, SquareAsterisk, User, UserRoundPen, VenusAndMars, Image, X } from "lucide-react"
+import { CalendarDays, ChevronDownIcon, CircleUser, LoaderCircle, Mail, Phone, SquareAsterisk, User, UserRoundPen, VenusAndMars } from "lucide-react"
 import { useForm, Controller } from "react-hook-form"
 import { useEffect, useState } from "react";
 import z from "zod";
@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import type { UserPostResponse } from "@/interface/user.interface"
-import { useAddUser, useDetailUser, useUpdateUser, useUpdateUserImage } from "@/hooks/useUserQuery";
+import { useAddUser, useDetailUser, useUpdateUser } from "@/hooks/useUserQuery";
 import { useUserManagementStore } from "@/store/userManagement.store";
 import { useAuthStore } from "@/store/auth.store";
 
@@ -69,8 +69,6 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
     const [openDate, setOpenDate] = useState(false)
     const { register,
         handleSubmit,
-        watch,
-        setValue,
         control,
         reset,
         formState: { errors },
@@ -89,7 +87,7 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
     })
 
     // API
-    const { data: dataDetailUser, isLoading: isLoadingDetailUser } = useDetailUser(idUser);
+    const { data: dataDetailUser } = useDetailUser(idUser);
     const { mutate: mutateAdd, isPending: isPendingAdd } = useAddUser();
     const { mutate: mutateUpdate, isPending: isPendingUpdate } = useUpdateUser();
 
@@ -153,7 +151,7 @@ export default function AuthPopup({ mode }: AuthPopupProps) {
                     </DialogTitle>
                 </DialogHeader>
                 <div className="overflow-auto mb-5">
-                    <div className="grid sm:grid-cols-2 gap-4 p-5 max-h-[400px]">
+                    <div className="grid sm:grid-cols-2 gap-4 p-5 max-h-[600px]">
                         <div className="grid gap-2">
                             <Label htmlFor="email"><Mail size={18} className="text-red-300" />Email</Label>
                             <Input className="h-10" id="email" placeholder="Nhập email @gmail.com" {...register("email")} />

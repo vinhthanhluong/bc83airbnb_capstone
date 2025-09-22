@@ -1,5 +1,5 @@
 import { MapPinPlusInside } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,8 +18,9 @@ import { locationManagementStore } from "@/store/locationManagement.store";
 import PaginationCustom from "../_components/PaginationCustom";
 import { usePaginationStore } from "@/store/pagination.store";
 import { useDebounce } from "@/hooks/useDebounce";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import type { LocationItem, ProvinceItem } from "@/interface/location.interface";
+import { file } from "zod";
 
 export default function LocationManagement() {
     // Store
@@ -28,7 +29,8 @@ export default function LocationManagement() {
 
     // State
     const [mode, setMode] = useState<"add" | "edit" | null>(null);
-    const [listUserCustom, setListUserCustom] = useState<LocationItem[] | null>(null);
+    const [listLocationFS, setListLocationFS] = useState<LocationItem[] | null>(null);
+    console.log("🌲 ~ LocationManagement ~ listLocationFS:", listLocationFS)
 
     // handle
     const handleOpenPopup = (modeData: any) => {
@@ -40,18 +42,31 @@ export default function LocationManagement() {
     }
 
     // Form
-    const { register, watch } = useForm<{ keyword: string, select: string }>({
+    const { register, watch, control } = useForm<{ keyword: string, select: string }>({
         defaultValues: {
             keyword: '',
+            select: 'all'
         }
     })
-    const keywordSearch = watch('keyword');
 
+    const keywordSearch = watch('keyword');
+    const selectSearch = watch('select');
     // API
     const keyworDebounce = useDebounce(keywordSearch, 500)
-    const { data: dataListLocation, isLoading: isLoadingListLocation } = useListLocation(locationPagi, 21, keyworDebounce);
+    const { data: dataListLocation, } = useListLocation(locationPagi, 21, keyworDebounce);
     const { data: dataListProvince } = useListProvince();
     const totalPg = dataListLocation?.totalRow ? Math.ceil(dataListLocation?.totalRow / dataListLocation?.pageSize) : 0;
+
+    // Filter && Search
+    useEffect(() => {
+        let arrFs = dataListLocation?.data || [];
+        if (selectSearch !== 'all') {
+            const filterArr = arrFs.filter((item) => item.tinhThanh.toLocaleLowerCase() === selectSearch.toLocaleLowerCase())
+            arrFs = filterArr.length > 0 ? filterArr : [];
+        }
+        setListLocationFS(arrFs)
+    }, [keyworDebounce, selectSearch, dataListLocation]);
+
 
     return (
         <>
@@ -77,28 +92,35 @@ export default function LocationManagement() {
                     </div>
                     <Input placeholder="Tìm vị trí" className="h-10 p-4 ps-10 " {...register('keyword')} />
                 </div>
+                <Controller
+                    name="select"
+                    control={control}
+                    render={({ field }) => (
+                        <Select defaultValue="all" onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger className="w-[220px] min-h-10">
+                                <SelectValue placeholder="Loại" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">Tất cả</SelectItem>
+                                {dataListProvince?.map((item: ProvinceItem) => (
+                                    <SelectItem key={item.code} value={item.name}>{item.name}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    )}
+                />
 
-                <Select defaultValue="all">
-                    <SelectTrigger className="w-[180px] min-h-10">
-                        <SelectValue placeholder="Loại" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">Tất cả</SelectItem>
-                        {/* {dataListProvince?.map((item: ProvinceItem) => (
-                            <SelectItem key={item.code} value={String(item.code)}>{item.name}</SelectItem>
-                        ))} */}
-                    </SelectContent>
-                </Select>
             </div>
 
             <div className="border border-[#eee] rounded-lg shadow-sm w-full">
-                <div className="relative grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-7 2xl:gap-5 p-6">
-                    {dataListLocation?.data?.map((item: LocationItem, index: number) => {
+                <div className="relative grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6 2xl:grid-cols-7 2xl:gap-5 p-6 empty:p-0">
+                    {listLocationFS && listLocationFS?.map((item: LocationItem, index: number) => {
                         return <LocationItemDetail key={index} data={item} handleValueOpenPopup={handleValueOpenPopup} />
                     })}
                 </div>
+                {listLocationFS && listLocationFS?.length <= 0 && <div className="text-center p-10 text-gray-400">{`${selectSearch} không tìm thấy kết quả`}</div>}
                 <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5 border-t border-gray-200">
-                    <p className="text-gray-500 text-sm text-center">Hiển thị {dataListLocation?.pageSize} vị trí mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListLocation?.totalRow} vị trí</p>
+                    <p className="text-gray-500 text-sm text-center">Hiển thị {listLocationFS?.length ?? 0 } vị trí mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListLocation?.totalRow} vị trí</p>
 
                     {totalPg !== (1 | 0) &&
                         <div className="block">

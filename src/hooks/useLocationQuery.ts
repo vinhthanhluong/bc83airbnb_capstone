@@ -1,4 +1,4 @@
-import type { LocationItem, LocationPagi } from "@/interface/location.interface"
+import type { LocationItem } from "@/interface/location.interface"
 import { addLocationApi, addLocationImageApi, detailLocationApi, listLocationApi, listProvinceApi, removeLocationApi, updateLocationApi } from "@/services/location.api"
 import { locationManagementStore } from "@/store/locationManagement.store"
 import { showDialog } from "@/utils/dialog"

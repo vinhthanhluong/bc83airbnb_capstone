@@ -23,7 +23,7 @@ export default function AuthPopupImg() {
     console.log("🌲 ~ AuthPopupImg ~ idUser:", idUser)
     const { user, setUser } = useAuthStore();
 
-    const { handleSubmit, watch, setValue, reset, formState: { errors }, } = useForm<{ avatar: File | null }>({
+    const { handleSubmit, watch, setValue, } = useForm<{ avatar: File | null }>({
         defaultValues: {
             avatar: null,
         }

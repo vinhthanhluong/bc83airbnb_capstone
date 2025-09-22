@@ -14,7 +14,7 @@ export default function BookingItemDetail({ data, handleValueOpenPopup }: Bookin
     const { setIdBookingRoom, setIdBooking } = useBookingManagementStore();
 
     // Api
-    const { mutate: mutateRemove, isPending: isPendingRemove } = useRemoveBooking()
+    const { mutate: mutateRemove } = useRemoveBooking()
 
     // Handle
     const handleDelete = (id: string) => {

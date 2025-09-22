@@ -1,6 +1,6 @@
 import type { ListUser } from '@/interface/user.interface';
 import { Eye, Pencil, SquarePen, Trash2 } from 'lucide-react';
-import { format } from 'date-fns'
+// import { format } from 'date-fns'
 import { useRemoveUser } from '@/hooks/useUserQuery';
 import { confirmDialog } from '@/utils/dialog';
 import { useState } from 'react';
@@ -22,9 +22,8 @@ export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemD
 
     // State
     const [isAction, setIsAction] = useState<boolean>(false);
-
     // API
-    const { mutate: mutateRemove, isPending: isPendingRemove } = useRemoveUser();
+    const { mutate: mutateRemove } = useRemoveUser();
 
     // Handle
     const handleDelete = (id: number) => {
