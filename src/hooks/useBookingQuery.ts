@@ -1,4 +1,3 @@
-import type { BaseApiResponse } from "@/interface/base.interface"
 import type { BookingItem } from "@/interface/booking.interface"
 import { addBookingApi, detailBookingApi, detailUserBookingApi, removeBookingApi, updateBookingApi } from "@/services/booking.api"
 import { useBookingManagementStore } from "@/store/bookingManagement.store"

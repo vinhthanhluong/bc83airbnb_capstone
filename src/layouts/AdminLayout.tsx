@@ -1,8 +1,7 @@
-import { Navigate, Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 
 import Header from '@/pages/AdminTemplate/_components/Header'
 import Sidebar from '@/pages/AdminTemplate/_components/Sidebar'
-import { useAuthStore } from '@/store/auth.store';
 import { useDashboardStore } from '@/store/dashboard.store';
 import { useEffect } from 'react';
 

@@ -54,14 +54,14 @@ export function BookingPopup({ mode }: BookingPopupProps) {
 
 
   // API
-  const { data: dataLocation, isLoading: isLoadingLocation } = useListLocation(1, 999);
-  const { data: dataRoom, isLoading: isLoadingRoom } = useLocationOfRoom(locationValue);
-  const { data: dataDetailBook, isLoading: isLoadingDetailBook } = useDetailBooking(Number(idBooking));
-  const { mutate: mutateAdd, isPending: isPendingAdd } = useAddBooking()
-  const { mutate: mutateUpdate, isPending: isPendingUpdate } = useUpdateBooking()
+  const { data: dataLocation, } = useListLocation(1, 999);
+  const { data: dataRoom, } = useLocationOfRoom(locationValue);
+  const { data: dataDetailBook, } = useDetailBooking(Number(idBooking));
+  const { mutate: mutateAdd, } = useAddBooking()
+  const { mutate: mutateUpdate, } = useUpdateBooking()
 
   // Form
-  const { register: registerBooking, handleSubmit: handleSubmitBooking, control: controlBooking, reset: resetBooking, setValue } = useForm<BookingItem>({
+  const { register: registerBooking, handleSubmit: handleSubmitBooking, control: controlBooking, reset: resetBooking } = useForm<BookingItem>({
     defaultValues: {
       maPhong: 0,
       ngayDen: undefined,

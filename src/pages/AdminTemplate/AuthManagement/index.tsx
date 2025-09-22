@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import type { ListUser } from "@/interface/user.interface";
 import AuthPopup from "./AuthPopup";
 import AuthItemDetail from "./AuthItemDetail";
-import { useListUserPagi, useSearchUser } from "@/hooks/useUserQuery";
+import { useListUserPagi } from "@/hooks/useUserQuery";
 import PaginationCustom from "../_components/PaginationCustom";
 import Loading from "@/components/layouts/Loading";
 import { useUserManagementStore } from "@/store/userManagement.store";
@@ -54,7 +54,6 @@ export default function AuthManagement() {
     // API
     const debounceKeyword = useDebounce(keywordSearch, 500);
     const { data: dataListUser, isLoading: isLoadingListUser } = useListUserPagi(userPagi, 10, debounceKeyword);
-    // const { data: dataSearchUser, isLoading: isLoadingSearchUser } = useSearchUser(debounceKeyword);
 
     // --- Effect: Type,Search user ---
     useEffect(() => {
@@ -167,7 +166,7 @@ export default function AuthManagement() {
                     {isLoadingListUser && <Loading />}
                 </div>
                 <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5 border-t border-gray-200">
-                    <p className="text-gray-500 text-sm text-center">Hiển thị {dataListUser?.pageSize} người dùng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListUser?.totalRow} người dùng</p>
+                    <p className="text-gray-500 text-sm text-center">Hiển thị {listUserCustom?.length ?? 0 } người dùng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListUser?.totalRow} người dùng</p>
                     <div className="block">
                         <PaginationCustom setPagi={setUserPagi} pageIndex={dataListUser?.pageIndex} pageSize={dataListUser?.pageSize} totalRow={dataListUser?.totalRow} />
                     </div>
@@ -176,7 +175,7 @@ export default function AuthManagement() {
             <Dialog open={isPopup} onOpenChange={setIsPopup}>
                 {mode === "add" && <AuthPopup mode="add" />}
                 {mode === "edit" && <AuthPopup mode="edit" />}
-                {mode === "editImg" && <AuthPopupImg />}
+                {/* {mode === "editImg" && <AuthPopupImg />} */}
             </Dialog>
         </>
     )
