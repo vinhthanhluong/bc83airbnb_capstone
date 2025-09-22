@@ -1,6 +1,6 @@
 import type { BaseApiResponse } from "@/interface/base.interface";
 import api, { apiProvince } from "./api"
-import type { DistrictsItem, LocationItem, LocationPagi, ProvinceItem } from "@/interface/location.interface";
+import type { LocationItem, LocationPagi, ProvinceItem } from "@/interface/location.interface";
 
 export const listLocationApi = async (pageIndex: number, pageSize: number, keyword?: string): Promise<LocationPagi<LocationItem>> => {
     try {
@@ -35,7 +35,7 @@ export const addLocationApi = async (data: LocationItem): Promise<LocationItem> 
 
 export const removeLocationApi = async (id: number) => {
     try {
-        const response = await api.delete(`vi-tri/${id}`);
+        await api.delete(`vi-tri/${id}`);
     } catch (error) {
         console.log("🌲 ~ removeLocationApi ~ error:", error)
         throw error
