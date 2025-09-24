@@ -163,7 +163,6 @@ export function LocationPopup({ mode }: LocationPopupProps) {
                         }
                         <div className="grid gap-2">
                             <Label htmlFor="tinhThanh"><Building2 size={18} className="text-blue-300" />Tỉnh thành</Label>
-                            {/* <Input className="h-10" id="city" placeholder="Nhập tỉnh thành" {...register('tinhThanh')} /> */}
                             <Controller
                                 name="tinhThanh"
                                 control={control}
@@ -193,7 +192,6 @@ export function LocationPopup({ mode }: LocationPopupProps) {
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="tenViTri"><MapPin size={18} className="text-red-300" />Tên vị trí</Label>
-                            {/* <Input className="h-10" id="name" placeholder="Nhập tên vị trí" {...register('tenViTri')} /> */}
                             <Controller
                                 name="tenViTri"
                                 control={control}

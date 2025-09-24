@@ -21,18 +21,121 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Anvil, Bath, Bed, ChefHat, DollarSign, Image, MapPin, MonitorStop, NotebookPen, School, SquareParking, Store, SunSnow, Users, WashingMachine, WavesLadder, Wifi, X } from "lucide-react"
+import { useAddRoom, useDetailRoom } from "@/hooks/useRoomQuery"
+import { useForm, Controller } from "react-hook-form"
+import { useEffect, useState } from "react"
+import { roomManagementStore } from "@/store/roomManagement.store"
+import type { RoomItem } from "@/interface/room.interface"
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod"
 
 interface RoomPopupProps {
     mode: "add" | "edit",
-    data?: any
 }
 
-export default function RoomPopup({ mode, data }: RoomPopupProps) {
-    console.log("🌲 ~ RoomPopup ~ data:", data)
+const positiveIntField = (label: string) =>
+    z
+        .string()
+        .min(1, `Vui lòng nhập ${label}`)
+        .refine((val) => !isNaN(Number(val)), {
+            message: `${label} phải là số`,
+        })
+        .transform((val) => Number(val))
+        .refine((num) => num >= 1, {
+            message: `${label} phải từ 1 trở lên`,
+        });
+
+const schema = z.object({
+    id: z.number(),
+    tenPhong: z.string().nonempty('Vui lòng nhập tên phòng'),
+    khach: positiveIntField("số lượng khách"),
+    phongNgu: positiveIntField("số lượng phòng"),
+    giuong: positiveIntField("số lượng giường"),
+    phongTam: positiveIntField("số lượng phòng tắm"),
+    moTa: z.string().nonempty("Vui lòng nhập mô tả"),
+    giaTien: positiveIntField("số lượng giá tiền"),
+    mayGiat: z.boolean(),
+    banLa: z.boolean(),
+    tivi: z.boolean(),
+    dieuHoa: z.boolean(),
+    wifi: z.boolean(),
+    bep: z.boolean(),
+    doXe: z.boolean(),
+    hoBoi: z.boolean(),
+    banUi: z.boolean(),
+    maViTri: z.string().nonempty(`Vui lòng chọn vị trí`),
+    hinhAnh: z.string()
+});
+
+export default function RoomPopup({ mode }: RoomPopupProps) {
+    // State
+
+    // Store
+    const { idRoom } = roomManagementStore()
+
+    // API
+    const { data: dataDetail } = useDetailRoom(idRoom);
+    const { mutate: mutateAdd } = useAddRoom();
+
+    // Form
+    const {
+        register,
+        handleSubmit,
+        watch,
+        reset,
+        control,
+        formState: { errors },
+    } = useForm({
+        defaultValues: {
+            "id": 0,
+            "tenPhong": "",
+            "khach": '',
+            "phongNgu": '',
+            "giuong": '',
+            "phongTam": '',
+            "moTa": "",
+            "giaTien": '',
+            "mayGiat": false,
+            "banLa": false,
+            "tivi": false,
+            "dieuHoa": false,
+            "wifi": false,
+            "bep": false,
+            "doXe": false,
+            "hoBoi": false,
+            "banUi": false,
+            "maViTri": "",
+            "hinhAnh": ""
+        },
+        resolver: zodResolver(schema),
+    })
+
+
+    useEffect(() => {
+
+
+    }, [dataDetail]);
+
+
+    const onSubmit = (data: RoomItem) => {
+        console.log("🌲 ~ onSubmit ~ data:", data)
+        if (dataDetail?.id) {
+            console.log('edit');
+        } else {
+            mutateAdd({
+                ...data,
+                maViTri: Number(data.maViTri),
+                hinhAnh: typeof data.hinhAnh === "string" ? data.hinhAnh : "",
+            })
+        }
+
+
+    }
+
 
     return (
         <DialogContent className="sm:w-[calc(100%-2rem)] sm:max-w-[800px] p-0 gap-0">
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <DialogHeader className="border-b border-gray-200 p-3 sm:p-5">
                     <DialogTitle className="flex items-center gap-4"><Store className="bg-pink-500 text-white size-10 p-2.5 sm:size-13 sm:p-3 rounded-md" />
                         {mode === "add" ? "Thêm" : "Sửa"} phòng
@@ -42,15 +145,16 @@ export default function RoomPopup({ mode, data }: RoomPopupProps) {
                     <div className="max-h-[400px]">
                         <div className="grid sm:grid-cols-2 gap-4 p-5">
                             <div className="grid gap-2">
-                                <Label htmlFor="name"><Store size={18} className="text-red-300" />Tên phòng</Label>
-                                <Input className="h-10" id="name" name="name" placeholder="Nhập tên phòng" />
+                                <Label htmlFor="tenPhong"><Store size={18} className="text-red-300" />Tên phòng</Label>
+                                <Input className="h-10" id="tenPhong" placeholder="Nhập tên phòng" {...register('tenPhong')} />
+                                {errors.tenPhong?.message && <p className="text-red-300 text-xs">{errors.tenPhong?.message}</p>}
                             </div>
-                            <div className="grid gap-4 row-span-3">
+                            {mode === "edit" && <div className="grid gap-4 row-span-3">
                                 <div className="block space-y-2">
                                     <Label htmlFor="picture"><Image size={18} className="text-green-400" />Hình ảnh</Label>
                                     <div className="relative flex items-center justify-center w-full">
                                         <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-51 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                                            <div className="hidden flex flex-col items-center justify-center pt-5 pb-6">
+                                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                                 <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                                                 </svg>
@@ -58,156 +162,248 @@ export default function RoomPopup({ mode, data }: RoomPopupProps) {
                                                 <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
                                             </div>
 
-                                            <img src="https://airbnbnew.cybersoft.edu.vn/images/vt1.jpg" className="w-full max-h-full object-contain" alt="" />
-                                            <input id="dropzone-file" type="file" className="hidden" />
+                                            {/* <img src="https://airbnbnew.cybersoft.edu.vn/images/vt1.jpg" className="w-full max-h-full object-contain" alt="" /> */}
+                                            <input id="dropzone-file" type="file" className="hidden"   {...register('hinhAnh')} />
                                         </label>
-                                        <X className="absolute z-2 top-1 right-1 cursor-pointer hover:text-red-400 transition-all duration-300" />
+                                        {/* <X className="absolute z-2 top-1 right-1 cursor-pointer hover:text-red-400 transition-all duration-300" /> */}
                                     </div>
                                 </div>
+                            </div>}
+                            <div className="grid gap-2">
+                                <Label htmlFor="khach"><Users size={18} className="text-blue-500" />Khách</Label>
+                                <Input className="h-10" id="khach" placeholder="Nhập số khách" {...register('khach')} />
+                                {errors.khach?.message && <p className="text-red-300 text-xs">{errors.khach?.message}</p>}
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="client"><Users size={18} className="text-blue-500" />Khách</Label>
-                                <Input className="h-10" id="client" name="client" placeholder="Nhập số khách" />
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="bathroom"><DollarSign size={20} className="text-green-400" />Giá phòng</Label>
-                                <Input className="h-10" id="bathroom" name="bathroom" placeholder="Nhập giá phòng" />
+                                <Label htmlFor="giaTien"><DollarSign size={20} className="text-green-400" />Giá phòng</Label>
+                                <Input className="h-10" id="giaTien" placeholder="Nhập giá phòng" {...register('giaTien')} />
+                                {errors.giaTien?.message && <p className="text-red-300 text-xs">{errors.giaTien?.message}</p>}
                             </div>
                             <div className="grid gap-2 row-span-2">
-                                <Label htmlFor="desc"><NotebookPen size={20} className="text-fuchsia-500" />Mô tả</Label>
-                                <Textarea id="desc" placeholder="Type your message here." className="h-[124px]" />
+                                <Label htmlFor="moTa"><NotebookPen size={20} className="text-fuchsia-500" />Mô tả</Label>
+                                <Textarea id="moTa" placeholder="Type your message here." className="h-[124px]" {...register('moTa')} />
+                                {errors.moTa?.message && <p className="text-red-300 text-xs">{errors.moTa?.message}</p>}
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="bedroom"><School size={20} className="text-orange-400" />Phòng ngủ</Label>
-                                <Input className="h-10" id="bedroom" name="bedroom" placeholder="Nhập phòng ngủ" />
+                                <Label htmlFor="phongNgu"><School size={20} className="text-orange-400" />Phòng ngủ</Label>
+                                <Input className="h-10" id="phongNgu" placeholder="Nhập phòng ngủ" {...register('phongNgu')} />
+                                {errors.phongNgu?.message && <p className="text-red-300 text-xs">{errors.phongNgu?.message}</p>}
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="bed"><Bed size={20} className="text-cyan-500" />Giường</Label>
-                                <Input className="h-10" id="bed" name="bed" placeholder="Nhập số giường" />
+                                <Label htmlFor="giuong"><Bed size={20} className="text-cyan-500" />Giường</Label>
+                                <Input className="h-10" id="giuong" placeholder="Nhập số giường" {...register('giuong')} />
+                                {errors.giuong?.message && <p className="text-red-300 text-xs">{errors.giuong?.message}</p>}
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="bathroom"><Bath size={20} className="text-yellow-400" />Phòng tắm</Label>
-                                <Input className="h-10" id="bathroom" name="bathroom" placeholder="Nhập phòng tắm" />
+                                <Label htmlFor="phongTam"><Bath size={20} className="text-yellow-400" />Phòng tắm</Label>
+                                <Input className="h-10" id="phongTam" placeholder="Nhập phòng tắm" {...register('phongTam')} />
+                                {errors.phongTam?.message && <p className="text-red-300 text-xs">{errors.phongTam?.message}</p>}
                             </div>
                             <div className="grid gap-2">
                                 <Label><MapPin size={20} className="text-rose-500" />Vị trí</Label>
-                                <Select defaultValue="admin">
-                                    <SelectTrigger className="w-full min-h-10">
-                                        <SelectValue placeholder="Loại" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">Tất cả</SelectItem>
-                                        <SelectItem value="user">Hồ chí minh</SelectItem>
-                                        <SelectItem value="admin">Hà nội</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                <Controller
+                                    name="maViTri"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Select onValueChange={field.onChange} value={field.value}>
+                                            <SelectTrigger className="w-full min-h-10">
+                                                <SelectValue placeholder="Chọn vị trí" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="11334">Hồ chí minh</SelectItem>
+                                                <SelectItem value="11340">Hà nội</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+                                />
+                                {errors.maViTri?.message && <p className="text-red-300 text-xs">{errors.maViTri?.message}</p>}
                             </div>
                         </div>
                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 p-5">
                             <p className="font-medium mb-0 col-span-2 sm:col-span-3 lg:col-span-4">Tiện ích</p>
                             <div className="grid gap-2">
                                 <Label><WashingMachine size={20} className="text-gray-500" />Máy giặt</Label>
-                                <RadioGroup defaultValue="washing2" className="flex gap-4">
-                                    <div className="flex items-center gap-1">
-                                        <RadioGroupItem value="washing1" id="washing1" />
-                                        <Label htmlFor="washing1">Có</Label>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <RadioGroupItem value="washing2" id="washing2" />
-                                        <Label htmlFor="washing2">Không</Label>
-                                    </div>
-                                </RadioGroup>
+                                <Controller
+                                    name="mayGiat"
+                                    control={control}
+                                    defaultValue={false}
+                                    render={({ field }) => (
+                                        <RadioGroup
+                                            value={field.value ? "mayGiat1" : "mayGiat2"}
+                                            onValueChange={(val) => field.onChange(val === "mayGiat1")}
+                                            className="flex gap-4">
+                                            <div className="flex items-center gap-1">
+                                                <RadioGroupItem value="mayGiat1" id="mayGiat1" />
+                                                <Label htmlFor="mayGiat1">Có</Label>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <RadioGroupItem value="mayGiat2" id="mayGiat2" />
+                                                <Label htmlFor="mayGiat2">Không</Label>
+                                            </div>
+                                        </RadioGroup>
+                                    )}
+                                />
                             </div>
                             <div className="grid gap-2">
                                 <Label><Anvil size={20} className="text-gray-500" />Bàn ủi</Label>
-                                <RadioGroup defaultValue="iron2" className="flex gap-4">
-                                    <div className="flex items-center gap-1">
-                                        <RadioGroupItem value="iron1" id="iron1" />
-                                        <Label htmlFor="iron1">Có</Label>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <RadioGroupItem value="iron2" id="iron2" />
-                                        <Label htmlFor="iron2">Không</Label>
-                                    </div>
-                                </RadioGroup>
+                                <Controller
+                                    name="banUi"
+                                    control={control}
+                                    defaultValue={false}
+                                    render={({ field }) => (
+                                        <RadioGroup
+                                            value={field.value ? "banUi1" : "banUi2"}
+                                            onValueChange={(val) => field.onChange(val === "banUi1")}
+                                            className="flex gap-4">
+                                            <div className="flex items-center gap-1">
+                                                <RadioGroupItem value="banUi1" id="banUi1" />
+                                                <Label htmlFor="banUi1">Có</Label>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <RadioGroupItem value="banUi2" id="banUi2" />
+                                                <Label htmlFor="banUi2">Không</Label>
+                                            </div>
+                                        </RadioGroup>
+                                    )}
+                                />
                             </div>
                             <div className="grid gap-2">
                                 <Label><MonitorStop size={20} className="text-gray-500" />Tivi</Label>
-                                <RadioGroup defaultValue="tivi2" className="flex gap-4">
-                                    <div className="flex items-center gap-1">
-                                        <RadioGroupItem value="tivi1" id="tivi1" />
-                                        <Label htmlFor="tivi1">Có</Label>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <RadioGroupItem value="tivi2" id="tivi2" />
-                                        <Label htmlFor="tivi2">Không</Label>
-                                    </div>
-                                </RadioGroup>
+                                <Controller
+                                    name="tivi"
+                                    control={control}
+                                    defaultValue={false}
+                                    render={({ field }) => (
+                                        <RadioGroup
+                                            value={field.value ? "tivi1" : "tivi2"}
+                                            onValueChange={(val) => field.onChange(val === "tivi1")}
+                                            className="flex gap-4">
+                                            <div className="flex items-center gap-1">
+                                                <RadioGroupItem value="tivi1" id="tivi1" />
+                                                <Label htmlFor="tivi1">Có</Label>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <RadioGroupItem value="tivi2" id="tivi2" />
+                                                <Label htmlFor="tivi2">Không</Label>
+                                            </div>
+                                        </RadioGroup>
+                                    )}
+                                />
                             </div>
                             <div className="grid gap-2">
                                 <Label><SunSnow size={20} className="text-gray-500" />Điều hòa</Label>
-                                <RadioGroup defaultValue="conditioning2" className="flex gap-4">
-                                    <div className="flex items-center gap-1">
-                                        <RadioGroupItem value="conditioning1" id="conditioning1" />
-                                        <Label htmlFor="conditioning1">Có</Label>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <RadioGroupItem value="conditioning2" id="conditioning2" />
-                                        <Label htmlFor="conditioning2">Không</Label>
-                                    </div>
-                                </RadioGroup>
+                                <Controller
+                                    name="dieuHoa"
+                                    control={control}
+                                    defaultValue={false}
+                                    render={({ field }) => (
+                                        <RadioGroup
+                                            value={field.value ? "dieuHoa1" : "dieuHoa2"}
+                                            onValueChange={(val) => field.onChange(val === "dieuHoa1")}
+                                            className="flex gap-4">
+                                            <div className="flex items-center gap-1">
+                                                <RadioGroupItem value="dieuHoa1" id="dieuHoa1" />
+                                                <Label htmlFor="dieuHoa1">Có</Label>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <RadioGroupItem value="dieuHoa2" id="dieuHoa2" />
+                                                <Label htmlFor="dieuHoa2">Không</Label>
+                                            </div>
+                                        </RadioGroup>
+                                    )}
+                                />
                             </div>
                             <div className="grid gap-2">
                                 <Label><Wifi size={20} className="text-gray-500" />Wifi</Label>
-                                <RadioGroup defaultValue="wifi2" className="flex gap-4">
-                                    <div className="flex items-center gap-1">
-                                        <RadioGroupItem value="wifi1" id="wifi1" />
-                                        <Label htmlFor="wifi1">Có</Label>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <RadioGroupItem value="wifi2" id="wifi2" />
-                                        <Label htmlFor="wifi2">Không</Label>
-                                    </div>
-                                </RadioGroup>
+                                <Controller
+                                    name="wifi"
+                                    control={control}
+                                    defaultValue={false}
+                                    render={({ field }) => (
+                                        <RadioGroup
+                                            value={field.value ? "wifi1" : "wifi2"}
+                                            onValueChange={(val) => field.onChange(val === "wifi1")}
+                                            className="flex gap-4">
+                                            <div className="flex items-center gap-1">
+                                                <RadioGroupItem value="wifi1" id="wifi1" />
+                                                <Label htmlFor="wifi1">Có</Label>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <RadioGroupItem value="wifi2" id="wifi2" />
+                                                <Label htmlFor="wifi2">Không</Label>
+                                            </div>
+                                        </RadioGroup>
+                                    )}
+                                />
                             </div>
                             <div className="grid gap-2">
                                 <Label><ChefHat size={20} className="text-gray-500" />Bếp</Label>
-                                <RadioGroup defaultValue="kitchen2" className="flex gap-4">
-                                    <div className="flex items-center gap-1">
-                                        <RadioGroupItem value="kitchen1" id="kitchen1" />
-                                        <Label htmlFor="kitchen1">Có</Label>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <RadioGroupItem value="kitchen2" id="kitchen2" />
-                                        <Label htmlFor="kitchen2">Không</Label>
-                                    </div>
-                                </RadioGroup>
+                                <Controller
+                                    name="bep"
+                                    control={control}
+                                    defaultValue={false}
+                                    render={({ field }) => (
+                                        <RadioGroup
+                                            value={field.value ? "bep1" : "bep2"}
+                                            onValueChange={(val) => field.onChange(val === "bep1")}
+                                            className="flex gap-4">
+                                            <div className="flex items-center gap-1">
+                                                <RadioGroupItem value="bep1" id="bep1" />
+                                                <Label htmlFor="bep1">Có</Label>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <RadioGroupItem value="bep2" id="bep2" />
+                                                <Label htmlFor="bep2">Không</Label>
+                                            </div>
+                                        </RadioGroup>
+                                    )}
+                                />
                             </div>
                             <div className="grid gap-2">
                                 <Label><SquareParking size={20} className="text-gray-500" />Bãi đỗ xe</Label>
-                                <RadioGroup defaultValue="parking2" className="flex gap-4">
-                                    <div className="flex items-center gap-1">
-                                        <RadioGroupItem value="parking1" id="parking1" />
-                                        <Label htmlFor="parking1">Có</Label>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <RadioGroupItem value="parking2" id="parking2" />
-                                        <Label htmlFor="parking2">Không</Label>
-                                    </div>
-                                </RadioGroup>
+                                <Controller
+                                    name="doXe"
+                                    control={control}
+                                    defaultValue={false}
+                                    render={({ field }) => (
+                                        <RadioGroup
+                                            value={field.value ? "doXe1" : "doXe2"}
+                                            onValueChange={(val) => field.onChange(val === "doXe1")}
+                                            className="flex gap-4">
+                                            <div className="flex items-center gap-1">
+                                                <RadioGroupItem value="doXe1" id="doXe1" />
+                                                <Label htmlFor="doXe1">Có</Label>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <RadioGroupItem value="doXe2" id="doXe2" />
+                                                <Label htmlFor="doXe2">Không</Label>
+                                            </div>
+                                        </RadioGroup>
+                                    )}
+                                />
                             </div>
                             <div className="grid gap-2">
                                 <Label><WavesLadder size={20} className="text-gray-500" />Hồ bơi</Label>
-                                <RadioGroup defaultValue="pool2" className="flex gap-4">
-                                    <div className="flex items-center gap-1">
-                                        <RadioGroupItem value="pool1" id="pool1" />
-                                        <Label htmlFor="pool1">Có</Label>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                        <RadioGroupItem value="pool2" id="pool2" />
-                                        <Label htmlFor="pool2">Không</Label>
-                                    </div>
-                                </RadioGroup>
+                                <Controller
+                                    name="hoBoi"
+                                    control={control}
+                                    defaultValue={false}
+                                    render={({ field }) => (
+                                        <RadioGroup
+                                            value={field.value ? "hoBoi1" : "hoBoi2"}
+                                            onValueChange={(val) => field.onChange(val === "hoBoi1")}
+                                            className="flex gap-4">
+                                            <div className="flex items-center gap-1">
+                                                <RadioGroupItem value="hoBoi1" id="hoBoi1" />
+                                                <Label htmlFor="hoBoi1">Có</Label>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <RadioGroupItem value="hoBoi2" id="hoBoi2" />
+                                                <Label htmlFor="hoBoi2">Không</Label>
+                                            </div>
+                                        </RadioGroup>
+                                    )}
+                                />
                             </div>
                         </div>
                     </div>

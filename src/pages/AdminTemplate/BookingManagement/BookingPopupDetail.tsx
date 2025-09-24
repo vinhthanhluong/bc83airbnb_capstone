@@ -15,7 +15,7 @@ export default function BookingPopupDetail() {
     // Store
     const { idBookingRoom } = useBookingManagementStore();
 
-    const { data: dataRoomDetail } = useDetailRoom(String(idBookingRoom))
+    const { data: dataRoomDetail } = useDetailRoom(Number(idBookingRoom))
 
     return (
         <DialogContent className="sm:w-[calc(100%-2rem)] sm:max-w-[1000px] p-0 gap-0">

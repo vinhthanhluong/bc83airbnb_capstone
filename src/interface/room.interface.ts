@@ -3,7 +3,7 @@ export interface RoomPagi<T> {
     pageSize: number;
     totalRow: number;
     keywords: null;
-    data: T;
+    data: T[];
 }
 
 export interface RoomItem {
