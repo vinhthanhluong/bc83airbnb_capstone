@@ -20,13 +20,12 @@ export default function RoomPopupDetail({ data }: RoomPopupDetailProps) {
                 </DialogTitle>
             </DialogHeader>
             <div className="overflow-auto mb-5 sm:mb-2">
-                <div className="max-h-[400px]">
+                <div className="max-h-[600px]">
                     <div className="block p-6">
                         <div className="img mb-3">
                             <img src={data?.hinhAnh} className="max-h-[300px] w-full object-contain" alt={data?.tenPhong} />
                         </div>
                         <p className="mb-4">{data?.moTa}</p>
-
                         <div className="grid grid-cols-3 mb-4">
                             <div className="flex items-center gap-1">
                                 <p className="font-medium flex items-center gap-1"><Users size={20} className="text-gray-700" />Khách</p>

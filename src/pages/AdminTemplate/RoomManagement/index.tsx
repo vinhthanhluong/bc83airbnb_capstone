@@ -19,30 +19,32 @@ import type { RoomItem } from "@/interface/room.interface";
 import PaginationCustom from "../_components/PaginationCustom";
 import { usePaginationStore } from "@/store/pagination.store";
 import { roomManagementStore } from "@/store/roomManagement.store";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export default function RoomManagement() {
     // State
     const [mode, setMode] = useState<"add" | "edit" | "detail" | null>(null);
-    const [popupData, setPopupData] = useState(null);
 
     // Store
     const { roomPagi, setRoomPagi } = usePaginationStore();
     const { isPopup, setIsPopup, idRoom } = roomManagementStore();
 
     // Handle
-    const handleOpenPopup = (modeData: any, data?: any) => {
+    const handleOpenPopup = (modeData: any,) => {
         setMode(modeData)
-        setPopupData(data || null);
         setIsPopup()
     }
 
     const handleValueOpenPopup = (data: string) => {
         handleOpenPopup(data);
     }
-
+    const keywordSearch = '';
     // Api
-    const { data: dataListRoom, } = useListRoom(roomPagi, 10);
-    const { data: dataDetailRoom, } = useDetailRoom(String(idRoom));
+    const keyworDebounce = useDebounce(keywordSearch, 500)
+    // const { data: dataListRoom, } = useListRoom(roomPagi, 18, keyworDebounce);
+    const { data: dataListRoom, } = useListRoom(5, 18, keyworDebounce);
+    const { data: dataDetailRoom, } = useDetailRoom(idRoom);
+    const totalPg = dataListRoom?.totalRow ? Math.ceil(dataListRoom?.totalRow / dataListRoom?.pageSize) : 0;
 
     return (
         <>
@@ -72,21 +74,23 @@ export default function RoomManagement() {
 
             <div className="border border-[#eee] rounded-lg shadow-sm w-full">
                 <div className="relative grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6 2xl:gap-5 p-6">
-                    {dataListRoom?.data?.map((item: RoomItem, index: number) => (
+                    {dataListRoom && dataListRoom?.data?.map((item: RoomItem, index: number) => (
                         <RoomItemDetail key={index} data={item} handleValueOpenPopup={handleValueOpenPopup} />
                     ))}
                 </div>
                 <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5 border-t border-gray-200">
                     <p className="text-gray-500 text-sm text-center">Hiển thị {dataListRoom?.pageSize} phòng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListRoom?.totalRow} phòng</p>
 
-                    <div className="block">
-                        <PaginationCustom setPagi={setRoomPagi} pageIndex={dataListRoom?.pageIndex} pageSize={dataListRoom?.pageSize} totalRow={dataListRoom?.totalRow} />
-                    </div>
+                    {totalPg !== (1 | 0) &&
+                        <div className="block">
+                            <PaginationCustom setPagi={setRoomPagi} pageIndex={dataListRoom?.pageIndex} pageSize={dataListRoom?.pageSize} totalRow={dataListRoom?.totalRow} />
+                        </div>
+                    }
                 </div>
             </div>
             <Dialog open={isPopup} onOpenChange={setIsPopup}>
                 {mode === "add" && <RoomPopup mode="add" />}
-                {mode === "edit" && <RoomPopup mode="edit" data={popupData} />}
+                {mode === "edit" && <RoomPopup mode="edit" />}
                 {mode === "detail" && <RoomPopupDetail data={dataDetailRoom} />}
             </Dialog>
         </>

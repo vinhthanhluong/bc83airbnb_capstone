@@ -49,13 +49,13 @@ export function BookingPopup({ mode }: BookingPopupProps) {
   const [openCheckIn, setOpenCheckIn] = useState(false)
   const [openCheckOut, setOpenCheckOut] = useState(false)
   const [locationDisabled, setLocationDisabled] = useState(true)
-  const [locationValue, setLocationValue] = useState<string>('')
+  const [locationValue, setLocationValue] = useState<number | null>(null)
 
 
 
   // API
   const { data: dataLocation, } = useListLocation(1, 999);
-  const { data: dataRoom, } = useLocationOfRoom(locationValue);
+  const { data: dataRoom, } = useLocationOfRoom(Number(locationValue));
   const { data: dataDetailBook, } = useDetailBooking(Number(idBooking));
   const { mutate: mutateAdd, } = useAddBooking()
   const { mutate: mutateUpdate, } = useUpdateBooking()
@@ -192,7 +192,7 @@ export function BookingPopup({ mode }: BookingPopupProps) {
               <Label htmlFor="name"><MapPin size={18} className="text-red-300" />Vị trí</Label>
               <Select
                 onValueChange={(val) => {
-                  setLocationValue(val)
+                  setLocationValue(Number(val))
                   setLocationDisabled(false)
                 }}
               >
