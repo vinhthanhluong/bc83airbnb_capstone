@@ -51,3 +51,23 @@ export const removeRoomApi = async (id: number) => {
         throw error
     }
 }
+
+export const updateRoomApi = async (id: number, data: RoomItem): Promise<RoomItem> => {
+    try {
+        const response = await api.put<BaseApiResponse<RoomItem>>(`phong-thue/${id}`, data);
+        return response.data.content
+    } catch (error) {
+        console.log("🌲 ~ updateRoomApi ~ error:", error)
+        throw error
+    }
+}
+
+export const addRoomImageApi = async (id: number, data: FormData): Promise<RoomItem> => {
+    try {
+        const response = await api.post<BaseApiResponse<RoomItem>>(`phong-thue/upload-hinh-phong?maPhong=${id}`, data);
+        return response.data.content
+    } catch (error) {
+        console.log("🌲 ~ addRoomImageApi ~ error:", error)
+        throw error
+    }
+}

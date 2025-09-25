@@ -26,7 +26,7 @@ export default function RoomManagement() {
     const [mode, setMode] = useState<"add" | "edit" | "detail" | null>(null);
 
     // Store
-    const { roomPagi, setRoomPagi } = usePaginationStore();
+    const { setRoomPagi } = usePaginationStore();
     const { isPopup, setIsPopup, idRoom } = roomManagementStore();
 
     // Handle
