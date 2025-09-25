@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { addRoomApi, detailRoomApi, listRoomApi, locationOfRoomApi, removeRoomApi } from "@/services/room.api"
+import { addRoomApi, addRoomImageApi, detailRoomApi, listRoomApi, locationOfRoomApi, removeRoomApi, updateRoomApi } from "@/services/room.api"
 import { showDialog } from "@/utils/dialog"
 import { roomManagementStore } from "@/store/roomManagement.store"
+import type { RoomItem } from "@/interface/room.interface"
 
 export const useListRoom = (pageIndex: number, pageSize: number, keyword?: string, optional?: {}) => {
     return useQuery({
@@ -76,5 +77,40 @@ export const useRemoveRoom = (optional?: {}) => {
         },
         ...optional
     })
+}
 
+export const useUpdateRoom = (optional?: {}) => {
+    const queryClient = useQueryClient();
+    const { setIsPopup } = roomManagementStore();
+    return useMutation<RoomItem, any, { id: number, data: RoomItem }>({
+        mutationFn: ({ id, data }) => updateRoomApi(id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['list-room'] })
+            setIsPopup()
+            showDialog({
+                title: 'Cập nhật phòng thành công',
+                icon: 'success',
+            })
+        },
+        onError: (error: any) => {
+            setIsPopup()
+            showDialog({
+                title: 'Cập nhật phòng thất bại',
+                icon: 'error',
+                text: error?.response?.data?.content
+            })
+        },
+        ...optional
+    })
+}
+
+export const useAddImageRoom = (optional?: {}) => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ id, data }: { id: number, data: FormData }) => addRoomImageApi(id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['list-room'] })
+        },
+        ...optional
+    })
 }
