@@ -28,6 +28,7 @@ import { roomManagementStore } from "@/store/roomManagement.store"
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { Resolver } from "react-hook-form";
+import { useListLocation } from "@/hooks/useLocationQuery"
 interface RoomPopupProps {
     mode: "add" | "edit",
 }
@@ -67,6 +68,7 @@ export default function RoomPopup({ mode }: RoomPopupProps) {
     const { mutate: mutateAdd } = useAddRoom();
     const { mutate: mutateAddImage } = useAddImageRoom();
     const { mutate: mutateUpdate } = useUpdateRoom();
+    const { data: dataLocation } = useListLocation(1, 999);
 
     // Form
     const {
@@ -231,8 +233,9 @@ export default function RoomPopup({ mode }: RoomPopupProps) {
                                                 <SelectValue placeholder="Chọn vị trí" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="11334">Hồ chí minh</SelectItem>
-                                                <SelectItem value="11340">Hà nội</SelectItem>
+                                                {dataLocation?.data.map(item => <SelectItem key={item.id} value={String(item.id)}>{item.tinhThanh} - {item.tenViTri}</SelectItem>)}
+                                                {/* <SelectItem value="11334">Hồ chí minh</SelectItem>
+                                                <SelectItem value="11340">Hà nội</SelectItem> */}
                                             </SelectContent>
                                         </Select>
                                     )}

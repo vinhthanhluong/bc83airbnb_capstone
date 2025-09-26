@@ -1,11 +1,10 @@
 import type { ListUser } from '@/interface/user.interface';
 import { Eye, SquarePen, Trash2 } from 'lucide-react';
-// import { format } from 'date-fns'
 import { useRemoveUser } from '@/hooks/useUserQuery';
 import { confirmDialog } from '@/utils/dialog';
-// import { useState } from 'react';
 import { useUserManagementStore } from '@/store/userManagement.store';
 import { useNavigate } from 'react-router-dom';
+import { formatDateSafe } from '@/hooks/useFormatDateSafe';
 
 type AuthItemDetailProps = {
     data: ListUser
@@ -66,8 +65,7 @@ export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemD
                 <p className=" ">{data.password}</p>
             </td>
             <td className="py-3 px-4">
-                <p className="">{birthday}</p>
-                {/* <p className="">{birthday&& format(new Date(birthday), "dd/MM/yyyy")}</p> */}
+                <p className="">{formatDateSafe(birthday)}</p>
             </td>
             <td className="py-3 px-4">
                 <p className="">{data.phone}</p>
