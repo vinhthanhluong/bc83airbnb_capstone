@@ -3,8 +3,9 @@ import { useRemoveRoom } from "@/hooks/useRoomQuery";
 import type { RoomItem } from "@/interface/room.interface";
 import { roomManagementStore } from "@/store/roomManagement.store";
 import { confirmDialog } from "@/utils/dialog";
-import { Search, SquarePen, Trash2 } from "lucide-react";
+import { Eye, SquarePen, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type RoomItemDetailProps = {
     data: RoomItem,
@@ -14,6 +15,9 @@ type RoomItemDetailProps = {
 export default function RoomItemDetail({ data, handleValueOpenPopup }: RoomItemDetailProps) {
     // State
     const [isAction, setIsAction] = useState<boolean>(false);
+
+    // Navigate
+    const navigate = useNavigate();
 
     // Store
     const { setIdRoom } = roomManagementStore();
@@ -49,10 +53,10 @@ export default function RoomItemDetail({ data, handleValueOpenPopup }: RoomItemD
                 <Trash2
                     onClick={() => handleDelete(data.id)}
                     size={20} className="group-[.active]:opacity-100 opacity-0 absolute z-2 top-4 left-4 text-white cursor-pointer hover:text-red-400 transition-all duration-300" />
-                <Search
+                <Eye
                     onClick={() => {
-                        handleValueOpenPopup('detail')
                         setIdRoom(data.id)
+                        navigate(`/dashboard/comment/${data.id}`)
                     }}
                     className="group-[.active]:opacity-100 opacity-0 absolute inset-0 text-white m-auto cursor-pointer z-2 hover:text-blue-300 transition-all duration-300" size={30} />
             </div>

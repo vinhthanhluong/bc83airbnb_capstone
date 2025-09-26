@@ -20,14 +20,16 @@ import PaginationCustom from "../_components/PaginationCustom";
 import { usePaginationStore } from "@/store/pagination.store";
 import { roomManagementStore } from "@/store/roomManagement.store";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useForm, Controller } from "react-hook-form";
+
 
 export default function RoomManagement() {
     // State
     const [mode, setMode] = useState<"add" | "edit" | "detail" | null>(null);
 
     // Store
-    const { setRoomPagi } = usePaginationStore();
-    const { isPopup, setIsPopup, idRoom } = roomManagementStore();
+    const { roomPagi, setRoomPagi } = usePaginationStore();
+    const { isPopup, setIsPopup, idRoom, setIdRoom } = roomManagementStore();
 
     // Handle
     const handleOpenPopup = (modeData: any,) => {
@@ -38,11 +40,22 @@ export default function RoomManagement() {
     const handleValueOpenPopup = (data: string) => {
         handleOpenPopup(data);
     }
-    const keywordSearch = '';
+
+    // Form
+    const { register, watch, control } = useForm({
+        defaultValues: {
+            keyword: '',
+            select: '',
+        },
+    })
+
+    const keywordSearch = watch('keyword');
+    const selectSearch = watch('select');
+    console.log("🌲 ~ RoomManagement ~ selectSearch:", selectSearch)
+    console.log("🌲 ~ RoomManagement ~ keywordSearch:", keywordSearch)
     // Api
     const keyworDebounce = useDebounce(keywordSearch, 500)
-    // const { data: dataListRoom, } = useListRoom(roomPagi, 18, keyworDebounce);
-    const { data: dataListRoom, } = useListRoom(5, 18, keyworDebounce);
+    const { data: dataListRoom, } = useListRoom(roomPagi, 18, keyworDebounce);
     const { data: dataDetailRoom, } = useDetailRoom(idRoom);
     const totalPg = dataListRoom?.totalRow ? Math.ceil(dataListRoom?.totalRow / dataListRoom?.pageSize) : 0;
 
@@ -51,7 +64,10 @@ export default function RoomManagement() {
             <div className="relative">
                 <h2 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-5 lg:mb-8">Quản lý phòng</h2>
                 <Button
-                    onClick={() => handleOpenPopup('add')}
+                    onClick={() => {
+                        handleOpenPopup('add')
+                        setIdRoom(0)
+                    }}
                     variant="outline" className="absolute top-0 md:top-1 right-0 flex items-center gap-2 text-white bg-pink-400 border-pink-400 font-semibold h-full p-2 md:px-3 rounded-md cursor-pointer hover:bg-white hover:text-pink-400 hover:shadow-[0_0_10px_#e396c1] transition-all duration-300">
                     <HousePlus />
                     Thêm
@@ -59,17 +75,25 @@ export default function RoomManagement() {
             </div>
 
             <div className="mb-6 flex gap-2 sp400:gap-4">
-                <Input placeholder="Tìm phòng" className="max-w-85 h-10" />
-                <Select defaultValue="user">
-                    <SelectTrigger className="w-[180px] min-h-10">
-                        <SelectValue placeholder="Loại" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">Tất cả</SelectItem>
-                        <SelectItem value="user">Hồ chí minh</SelectItem>
-                        <SelectItem value="admin">Hà nội</SelectItem>
-                    </SelectContent>
-                </Select>
+                <Input placeholder="Tìm phòng" className="max-w-85 h-10" {...register("keyword")} />
+                <Controller
+                    name="select"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                        <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger className="w-[180px] min-h-10">
+                                <SelectValue placeholder="Loại" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">Tất cả</SelectItem>
+                                <SelectItem value="user">Hồ chí minh</SelectItem>
+                                <SelectItem value="admin">Hà nội</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    )}
+                />
+
             </div>
 
             <div className="border border-[#eee] rounded-lg shadow-sm w-full">
@@ -79,7 +103,7 @@ export default function RoomManagement() {
                     ))}
                 </div>
                 <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5 border-t border-gray-200">
-                    <p className="text-gray-500 text-sm text-center">Hiển thị {dataListRoom?.pageSize} phòng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListRoom?.totalRow} phòng</p>
+                    <p className="text-gray-500 text-sm text-center">Hiển thị {dataListRoom?.data.length ?? 0} phòng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListRoom?.totalRow} phòng</p>
 
                     {totalPg !== (1 | 0) &&
                         <div className="block">
