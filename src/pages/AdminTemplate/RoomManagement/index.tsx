@@ -1,5 +1,5 @@
 import { HousePlus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,18 +14,21 @@ import { Dialog } from "@/components/ui/dialog";
 import RoomPopup from "./RoomPopup";
 import RoomPopupDetail from "./RoomPopupDetail";
 import RoomItemDetail from "./RoomItemDetail";
-import { useDetailRoom, useListRoom } from "@/hooks/useRoomQuery";
+import { useDetailRoom, useListRoom, useLocationOfRoom } from "@/hooks/useRoomQuery";
 import type { RoomItem } from "@/interface/room.interface";
 import PaginationCustom from "../_components/PaginationCustom";
 import { usePaginationStore } from "@/store/pagination.store";
 import { roomManagementStore } from "@/store/roomManagement.store";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useForm, Controller } from "react-hook-form";
+import { useListLocation } from "@/hooks/useLocationQuery";
+import { el } from "date-fns/locale";
 
 
 export default function RoomManagement() {
     // State
     const [mode, setMode] = useState<"add" | "edit" | "detail" | null>(null);
+    const [dataRoomNew, setDataRoomNew] = useState<RoomItem[] | null>(null);
 
     // Store
     const { roomPagi, setRoomPagi } = usePaginationStore();
@@ -45,19 +48,35 @@ export default function RoomManagement() {
     const { register, watch, control } = useForm({
         defaultValues: {
             keyword: '',
-            select: '',
+            select: 'all',
         },
     })
 
     const keywordSearch = watch('keyword');
     const selectSearch = watch('select');
-    console.log("🌲 ~ RoomManagement ~ selectSearch:", selectSearch)
-    console.log("🌲 ~ RoomManagement ~ keywordSearch:", keywordSearch)
     // Api
     const keyworDebounce = useDebounce(keywordSearch, 500)
     const { data: dataListRoom, } = useListRoom(roomPagi, 18, keyworDebounce);
     const { data: dataDetailRoom, } = useDetailRoom(idRoom);
+
+    const { data: dataLocation } = useListLocation(1, 999);
+    const { data: dataLocationRoom } = useLocationOfRoom(Number(selectSearch));
     const totalPg = dataListRoom?.totalRow ? Math.ceil(dataListRoom?.totalRow / dataListRoom?.pageSize) : 0;
+
+    useEffect(() => {
+        let dataNew: RoomItem[] = dataListRoom?.data || [];
+
+        if (selectSearch !== "all") {
+            dataNew = dataLocationRoom || [];
+        }
+
+        if (keywordSearch) {
+            dataNew = dataNew.filter(item => item.tenPhong.toLowerCase().includes(keywordSearch.toLowerCase()));
+        }
+
+        setDataRoomNew(dataNew)
+
+    }, [selectSearch, keywordSearch, dataListRoom, dataLocationRoom]);
 
     return (
         <>
@@ -79,16 +98,14 @@ export default function RoomManagement() {
                 <Controller
                     name="select"
                     control={control}
-                    defaultValue=""
                     render={({ field }) => (
-                        <Select onValueChange={field.onChange} value={field.value}>
+                        <Select defaultValue="all" onValueChange={field.onChange} value={field.value}>
                             <SelectTrigger className="w-[180px] min-h-10">
-                                <SelectValue placeholder="Loại" />
+                                <SelectValue placeholder="Chọn vị trí" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">Tất cả</SelectItem>
-                                <SelectItem value="user">Hồ chí minh</SelectItem>
-                                <SelectItem value="admin">Hà nội</SelectItem>
+                                {dataLocation?.data.map(item => <SelectItem key={item.id} value={String(item.id)}>{item.tinhThanh} - {item.tenViTri}</SelectItem>)}
                             </SelectContent>
                         </Select>
                     )}
@@ -98,14 +115,15 @@ export default function RoomManagement() {
 
             <div className="border border-[#eee] rounded-lg shadow-sm w-full">
                 <div className="relative grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6 2xl:gap-5 p-6">
-                    {dataListRoom && dataListRoom?.data?.map((item: RoomItem, index: number) => (
+                    {dataRoomNew && dataRoomNew?.map((item: RoomItem, index: number) => (
                         <RoomItemDetail key={index} data={item} handleValueOpenPopup={handleValueOpenPopup} />
                     ))}
                 </div>
+                {dataRoomNew && dataRoomNew?.length <= 0 && <div className="text-center pb-6 text-gray-400">{`Không tìm thấy kết quả "${keywordSearch}"`}</div>}
                 <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5 border-t border-gray-200">
                     <p className="text-gray-500 text-sm text-center">Hiển thị {dataListRoom?.data.length ?? 0} phòng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListRoom?.totalRow} phòng</p>
 
-                    {totalPg !== (1 | 0) &&
+                    {totalPg > 1 &&
                         <div className="block">
                             <PaginationCustom setPagi={setRoomPagi} pageIndex={dataListRoom?.pageIndex} pageSize={dataListRoom?.pageSize} totalRow={dataListRoom?.totalRow} />
                         </div>

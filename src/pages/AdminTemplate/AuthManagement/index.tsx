@@ -54,6 +54,7 @@ export default function AuthManagement() {
     // API
     const debounceKeyword = useDebounce(keywordSearch, 500);
     const { data: dataListUser, isLoading: isLoadingListUser } = useListUserPagi(userPagi, 10, debounceKeyword);
+    const totalPg = dataListUser?.totalRow ? Math.ceil(dataListUser?.totalRow / dataListUser?.pageSize) : 0;
 
     // --- Effect: Type,Search user ---
     useEffect(() => {
@@ -154,7 +155,7 @@ export default function AuthManagement() {
                                 <tr>
                                     <td colSpan={9} className="text-center p-5 text-gray-400">
                                         {debounceKeyword
-                                            ? `Không tìm thấy kết quả cho "${debounceKeyword}"`
+                                            ? `Không tìm thấy kết quả "${debounceKeyword}"`
                                             : "Không có dữ liệu"}
                                     </td>
                                 </tr>
@@ -166,10 +167,10 @@ export default function AuthManagement() {
                     {isLoadingListUser && <Loading />}
                 </div>
                 <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5 border-t border-gray-200">
-                    <p className="text-gray-500 text-sm text-center">Hiển thị {listUserCustom?.length ?? 0 } người dùng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListUser?.totalRow} người dùng</p>
-                    <div className="block">
+                    <p className="text-gray-500 text-sm text-center">Hiển thị {listUserCustom?.length ?? 0} người dùng mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListUser?.totalRow} người dùng</p>
+                    {totalPg > 1 && <div className="block">
                         <PaginationCustom setPagi={setUserPagi} pageIndex={dataListUser?.pageIndex} pageSize={dataListUser?.pageSize} totalRow={dataListUser?.totalRow} />
-                    </div>
+                    </div>}
                 </div>
             </div>
             <Dialog open={isPopup} onOpenChange={setIsPopup}>
