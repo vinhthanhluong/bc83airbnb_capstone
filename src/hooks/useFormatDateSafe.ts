@@ -1,6 +1,6 @@
 import { format, parse, parseISO, isValid } from 'date-fns'
 
-export const formatDateSafe = (dateStr?: string | null) => {
+export const formatDateSafe = (dateStr?: string| Date | null) => {
     if (!dateStr || typeof dateStr !== "string") return ""
 
     let date: Date | null = null

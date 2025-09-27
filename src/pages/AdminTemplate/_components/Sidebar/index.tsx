@@ -1,4 +1,4 @@
-import { House, MapPinned, MessageSquareText, Store, User } from 'lucide-react';
+import { House, MapPinned, Store, User } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 

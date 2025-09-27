@@ -2,6 +2,16 @@ import type { BaseApiResponse } from "@/interface/base.interface"
 import type { BookingItem } from "@/interface/booking.interface"
 import api from "./api"
 
+export const listBookingApi = async (): Promise<BookingItem[]> => {
+    try {
+        const response = await api.get<BaseApiResponse<BookingItem[]>>(`dat-phong/`)
+        return response.data.content;
+    } catch (error) {
+        console.log("🌲 ~ listBookingApi ~ error:", error)
+        throw error
+    }
+}
+
 export const detailUserBookingApi = async (id: string): Promise<BookingItem[]> => {
     try {
         const response = await api.get<BaseApiResponse<BookingItem[]>>(`dat-phong/lay-theo-nguoi-dung/${id}`)
