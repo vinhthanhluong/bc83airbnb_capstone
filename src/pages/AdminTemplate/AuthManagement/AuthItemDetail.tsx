@@ -37,8 +37,7 @@ export default function AuthItemDetail({ data, handleValueOpenPopup }: AuthItemD
     return (
         <tr className="bg-white border-t border-gray-200 hover:bg-gray-50 text-gray-800">
             <td className="py-3 px-4 pl-6">
-                <div
-                    className={`size-12 rounded-full bg-gray-300 rounded overflow-hidden cursor-pointer relative`}>
+                <div className={`size-12 rounded-full bg-gray-300 rounded overflow-hidden cursor-pointer relative`}>
                     {
                         data.avatar ?
                             (<img className="w-full h-full object-cover" alt={data.name} src={data.avatar} onError={(e) => e.currentTarget.src="https://placehold.jp/ababab/ffffff/200x200.jpg?text=NoImg"} />) :

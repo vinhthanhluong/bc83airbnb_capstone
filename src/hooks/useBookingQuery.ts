@@ -1,8 +1,16 @@
 import type { BookingItem } from "@/interface/booking.interface"
-import { addBookingApi, detailBookingApi, detailUserBookingApi, removeBookingApi, updateBookingApi } from "@/services/booking.api"
+import { addBookingApi, detailBookingApi, detailUserBookingApi, listBookingApi, removeBookingApi, updateBookingApi } from "@/services/booking.api"
 import { useBookingManagementStore } from "@/store/bookingManagement.store"
 import { showDialog } from "@/utils/dialog"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+
+export const useListBooking = (optional?: {}) => {
+    return useQuery({
+        queryKey: ['detail-user-booking'],
+        queryFn: () => listBookingApi(),
+        ...optional
+    })
+}
 
 export const useDetailUserBooking = (id: string, optional?: {}) => {
     return useQuery({

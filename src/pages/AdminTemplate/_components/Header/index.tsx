@@ -63,11 +63,11 @@ export default function Header() {
             <div className='font-medium hidden md:block'>{user?.user.name}</div>
           </div>
           {isActiveAvatar && <div className="absolute top-[120%] overflow-hidden right-0 z-10 bg-white divide-y divide-gray-200 rounded-md shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600">
-            <ul className="text-sm text-gray-700 dark:text-gray-200">
+            {/* <ul className="text-sm text-gray-700 dark:text-gray-200">
               <li>
                 <p className="px-4 py-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Thông tin</p>
               </li>
-            </ul>
+            </ul> */}
             <p onClick={handleLogout} className="cursor-pointer px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Đăng xuất</p>
           </div>}
         </div>

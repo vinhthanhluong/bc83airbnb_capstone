@@ -1,4 +1,4 @@
-import { House, MapPinned, MessageSquareText, Store, User } from 'lucide-react';
+import { House, MapPinned, Store, User } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -9,7 +9,7 @@ const MENU_DASHBOARD = [
     { id: 2, icon: <MapPinned />, text: 'Quản lí vị trí', link: 'location-management' },
     { id: 3, icon: <Store />, text: 'Quản lí tin phòng', link: 'room-management' },
     // { id: 4, icon: <HousePlus />, text: 'Quản lí đặt phòng', link: 'booking' },
-    { id: 5, icon: <MessageSquareText />, text: 'Quản lí bình luận', link: 'comment-management' }
+    // { id: 5, icon: <MessageSquareText />, text: 'Quản lí bình luận', link: 'comment-management' }
 ]
 
 export default function Sidebar() {
@@ -41,6 +41,8 @@ export default function Sidebar() {
         const isLocal = MENU_DASHBOARD.find(item => {
             if (local === 'booking') {
                 return item.link === 'auth-management'
+            } else if (local === 'comment') {
+                return item.link === 'room-management'
             } else {
                 return item.link === local
             }

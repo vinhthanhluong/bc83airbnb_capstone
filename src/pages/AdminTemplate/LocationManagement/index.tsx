@@ -116,11 +116,11 @@ export default function LocationManagement() {
                         return <LocationItemDetail key={index} data={item} handleValueOpenPopup={handleValueOpenPopup} />
                     })}
                 </div>
-                {listLocationFS && listLocationFS?.length <= 0 && <div className="text-center p-10 text-gray-400">{`${selectSearch} không tìm thấy kết quả`}</div>}
+                {listLocationFS && listLocationFS?.length <= 0 && <div className="text-center p-10 text-gray-400">{`Không tìm thấy kết quả "${keywordSearch || selectSearch} "`}</div>}
                 <div className="flex items-center justify-between flex-col gap-3 lg:flex-row px-6 py-5 border-t border-gray-200">
                     <p className="text-gray-500 text-sm text-center">Hiển thị {listLocationFS?.length ?? 0 } vị trí mỗi trang <span className="sm:inline-block hidden">-</span><br className="sm:hidden" /> Tổng cộng {dataListLocation?.totalRow} vị trí</p>
 
-                    {totalPg !== (1 | 0) &&
+                    {totalPg > 1 &&
                         <div className="block">
                             <PaginationCustom setPagi={setLocationPagi} pageIndex={dataListLocation?.pageIndex} pageSize={dataListLocation?.pageSize} totalRow={dataListLocation?.totalRow} />
                         </div>

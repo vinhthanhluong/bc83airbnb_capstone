@@ -13,7 +13,6 @@ import { BookingPopup } from "./BookingPopup";
 
 export default function BookingManagement() {
     // State
-    // const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
     const [mode, setMode] = useState<"add" | "edit" | "detail" | null | string>(null);
 
     // Param

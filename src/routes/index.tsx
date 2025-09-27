@@ -52,8 +52,6 @@ export const routes: RouteObject[] = [
             { path: 'auth-management', element: withSuspense(AuthManagement) },
             { path: 'location-management', element: withSuspense(LocationManagement) },
             { path: 'room-management', element: withSuspense(RoomManagement) },
-            // { path: 'booking-management', element: withSuspense(BookingManagement) },
-            // { path: 'comment-management', element: withSuspense(CommentManagement) },
             { path: 'comment/:roomID', element: withSuspense(CommentManagement) },
             { path: 'booking/:userID', element: withSuspense(BookingManagement) }
         ]
