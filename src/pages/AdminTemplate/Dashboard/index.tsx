@@ -1,46 +1,11 @@
-import { useListBooking } from "@/hooks/useBookingQuery";
-import { formatDateSafe } from "@/hooks/useFormatDateSafe";
-import { useListLocation } from "@/hooks/useLocationQuery";
-import { useListRoom } from "@/hooks/useRoomQuery";
 import { useListUserPagi } from "@/hooks/useUserQuery";
-import { detailUserApi } from "@/services/user.api";
+import { Chart } from "./Chart";
+import { ListData } from "./ListData";
+import { useListRoom } from "@/hooks/useRoomQuery";
+import { useListLocation } from "@/hooks/useLocationQuery";
+import { useListBooking } from "@/hooks/useBookingQuery";
 import { useQueries } from "@tanstack/react-query";
-
-import { TrendingUp } from "lucide-react"
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import {
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from "@/components/ui/chart"
-import type { ChartConfig } from "@/components/ui/chart"
-export const description = "An area chart with axes"
-const chartData = [
-    { month: "January", desktop: 186, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 214, mobile: 140 },
-]
-const chartConfig = {
-    desktop: {
-        label: "Desktop",
-        color: "red",
-    },
-    mobile: {
-        label: "Mobile",
-        color: "var(--chart-2)",
-    },
-} satisfies ChartConfig
+import { detailUserApi } from "@/services/user.api";
 
 export default function Dashboard() {
 
@@ -49,11 +14,10 @@ export default function Dashboard() {
     const { data: dataRoom } = useListRoom(1, 1);
     const { data: dataLocation } = useListLocation(1, 1);
     const { data: dataBooking } = useListBooking();
+    // History dataBooking
     const dataBookingSort = dataBooking?.sort((a, b) => b.id - a.id).slice(0, 5);
-
     // get list of unique userId from booking
     const userIds = [...new Set(dataBookingSort?.map(item => item.maNguoiDung) || [])];
-
     // call multiple APIs User Details
     const userQueries = useQueries({
         queries: userIds.map(id => ({
@@ -62,128 +26,94 @@ export default function Dashboard() {
             enabled: !!id,
         }))
     })
-
     // mapping: attach user info to booking
+    
     const bookingWithUser = dataBookingSort?.map(item => {
         const user = userQueries.find(q => q.data?.id === item.maNguoiDung)?.data
         return { ...item, user }
     })
 
     return (
-        <div>
-            <Card>
-                <CardHeader>
-                    <CardTitle>Area Chart - Axes</CardTitle>
-                    <CardDescription>
-                        Showing total visitors for the last 6 months
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <ChartContainer config={chartConfig}>
-                        <AreaChart
-                            accessibilityLayer
-                            data={chartData}
-                            margin={{
-                                left: -20,
-                                right: 12,
-                            }}
-                        >
-                            <CartesianGrid vertical={false} />
-                            <XAxis
-                                dataKey="month"
-                                tickLine={false}
-                                axisLine={false}
-                                tickMargin={8}
-                                tickFormatter={(value) => value.slice(0, 3)}
-                            />
-                            <YAxis
-                                tickLine={false}
-                                axisLine={false}
-                                tickMargin={8}
-                                tickCount={3}
-                            />
-                            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-                            <Area
-                                dataKey="mobile"
-                                type="natural"
-                                fill="var(--color-mobile)"
-                                fillOpacity={0.4}
-                                stroke="var(--color-mobile)"
-                                stackId="a"
-                            />
-                            <Area
-                                dataKey="desktop"
-                                type="natural"
-                                fill="var(--color-desktop)"
-                                fillOpacity={0.4}
-                                stroke="var(--color-desktop)"
-                                stackId="a"
-                            />
-                        </AreaChart>
-                    </ChartContainer>
-                </CardContent>
-                <CardFooter>
-                    <div className="flex w-full items-start gap-2 text-sm">
-                        <div className="grid gap-2">
-                            <div className="flex items-center gap-2 leading-none font-medium">
-                                Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-                            </div>
-                            <div className="text-muted-foreground flex items-center gap-2 leading-none">
-                                January - June 2024
-                            </div>
+        <div className="min-h-screen bg-gray-50 pb-14 md:pb-0 rounded-lg overflow-hidden">
+            <div className="bg-gradient-to-r from-sky-300 to-blue-300 text-white p-6 flex justify-between items-center">
+                <h1 className="text-3xl font-bold">Tổng Quan</h1>
+            </div>
+            {/* 3 box */}
+            <div className="p-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-gray-700 font-medium">Người Dùng</h2>
+                            <span className="bg-gradient-to-r from-sky-300 to-blue-300 p-2 rounded-lg">
+                                <svg
+                                    className="w-8 h-8 text-white dark:text-white"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        fill-rule="evenodd"
+                                        d="M8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H6Zm7.25-2.095c.478-.86.75-1.85.75-2.905a5.973 5.973 0 0 0-.75-2.906 4 4 0 1 1 0 5.811ZM15.466 20c.34-.588.535-1.271.535-2v-1a5.978 5.978 0 0 0-1.528-4H18a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2h-4.535Z"
+                                        clip-rule="evenodd"
+                                    />
+                                </svg>
+                            </span>
                         </div>
+                        <p className="text-3xl font-bold mt-4">{dataUser?.totalRow}</p>
                     </div>
-                </CardFooter>
-            </Card>
-            <div className="flex gap-2">
-                <h1>Người dùng</h1>
-                <p>{dataUser?.totalRow}</p>
-            </div>
-            <div className="flex gap-2">
-                <h1>Số phòng</h1>
-                <p>{dataRoom?.totalRow}</p>
-            </div>
-            <div className="flex gap-2">
-                <h1>Vị trí</h1>
-                <p>{dataLocation?.totalRow}</p>
-            </div>
-            <div className="p-5 mt-5 bg-amber-100">
-                <h1>Lịch sử đặt phòng</h1>
-                <table>
-                    <tbody>
-                        <tr>
-                            <th>Phòng</th>
-                            <th>Ngày đặt phòng</th>
-                            <th>Avatar</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                        </tr>
-                        {bookingWithUser?.map(item => (
-                            <tr key={item.id}>
-                                <td>{item.maPhong}</td>
-                                <td>{formatDateSafe(item.ngayDen)}</td>
-                                <td>
-                                    <div className={`size-12 rounded-full bg-gray-300 rounded overflow-hidden cursor-pointer relative`}>
-                                        {
-                                            item.user?.avatar ?
-                                                (<img className="w-full h-full object-cover" alt={item.user?.name} src={item.user?.avatar} onError={(e) => e.currentTarget.src = "https://placehold.jp/ababab/ffffff/200x200.jpg?text=NoImg"} />) :
-                                                (
-                                                    <div className="cursor-pointer w-full h-full flex items-center justify-center bg-gradient-to-r from-sky-300 to-blue-300 rounded-full">
-                                                        <p className="text-lg text-white font-medium">
-                                                            {item.user?.role === 'ADMIN' ? 'Ad' : "Us"}
-                                                        </p>
-                                                    </div>
-                                                )
-                                        }
-                                    </div>
-                                </td>
-                                <td>{item.user?.name}</td>
-                                <td>{item.user?.email}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                    <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-gray-700 font-medium">Số Phòng</h2>
+                            <span className="bg-gradient-to-r from-sky-300 to-blue-300  p-2 rounded-lg">
+                                <svg
+                                    className="w-8 h-8 text-white dark:text-white"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path d="M2.535 11A3.981 3.981 0 0 0 2 13v4a1 1 0 0 0 1 1h2v1a1 1 0 1 0 2 0v-1h10v1a1 1 0 1 0 2 0v-1h2a1 1 0 0 0 1-1v-4c0-.729-.195-1.412-.535-2H2.535ZM20 9V8a4 4 0 0 0-4-4h-3v5h7Zm-9-5H8a4 4 0 0 0-4 4v1h7V4Z" />
+                                </svg>
+                            </span>
+                        </div>
+                        <p className="text-3xl font-bold mt-4 ">{dataRoom?.totalRow}</p>
+                    </div>
+                    <div className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-gray-700 font-medium">Vị Trí</h2>
+                            <span className="bg-gradient-to-r from-sky-300 to-blue-300  p-2 rounded-lg">
+                                <svg
+                                    className="w-8 h-8 text-white dark:text-white"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    fill="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        fill-rule="evenodd"
+                                        d="M5 9a7 7 0 1 1 8 6.93V21a1 1 0 1 1-2 0v-5.07A7.001 7.001 0 0 1 5 9Zm5.94-1.06A1.5 1.5 0 0 1 12 7.5a1 1 0 1 0 0-2A3.5 3.5 0 0 0 8.5 9a1 1 0 0 0 2 0c0-.398.158-.78.44-1.06Z"
+                                        clip-rule="evenodd"
+                                    />
+                                </svg>
+                            </span>
+                        </div>
+                        <p className="text-3xl font-bold mt-4">{dataLocation?.totalRow}</p>
+                    </div>
+                </div>
+                <div className="mb-6">
+                    <Chart />
+                </div>
+                <div>
+                    <ListData data={bookingWithUser ?? []} />
+                </div>
             </div>
         </div>
-    )
+    );
 }
